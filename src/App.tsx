@@ -72,9 +72,9 @@ const GALLERY = [
     size: "md:col-span-2 md:row-span-2",
   },
   { src: "public/IMG_9349.JPG.jpeg", caption: "GABRI Live at Trivandrum", size: "" },
-  { src: "public/IMG_4249.jpg", caption: "YOGI SEKHAR Live at NIT Calicut", size: "" },
-  { src: "public/IMG_4537.jpg", caption: "VINEETH SREENIVASAN Live at NIT Calicut", size: "" },
-  { src: "public/Sdee.jpg", caption: "SDEE Live at Trivandrum", size: "" },
+  { src: "public/photos/IMG_4249.jpg", caption: "YOGI SEKHAR Live at NIT Calicut", size: "" },
+  { src: "public/photos/IMG_4537.jpg", caption: "VINEETH SREENIVASAN Live at NIT Calicut", size: "" },
+  { src: "public/photos/Sdee.jpg", caption: "SDEE Live at Trivandrum", size: "" },
   { src: "public/IMG_9484.JPG.jpeg", caption: "VEDAN at Calicut", size: "" },
   { src: "public/IMG_4406.PNG", caption: "STIC & MC COUPER Live at Kannur", size: "" },
   { src: "public/IMG_4405.PNG", caption: "SALIM MERCHANT Live at NIT Calicut", size: "" },
@@ -196,9 +196,9 @@ export default function App() {
                 {/* <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-600 to-sky-600 flex items-center justify-center text-3xl">
                   👤
                 </div> */}
-   <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-violet-500 shadow-lg">
+                <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-violet-500 shadow-lg">
   <img
-    src="/photos/IMG_1.jpeg"
+    src="public\photos\IMG_1.jpeg"
     alt="Tojo Kattakayam"
     className="w-full h-full object-cover"
   />
