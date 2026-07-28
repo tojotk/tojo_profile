@@ -196,9 +196,9 @@ export default function App() {
                 {/* <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-600 to-sky-600 flex items-center justify-center text-3xl">
                   👤
                 </div> */}
-                <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-violet-500 shadow-lg">
+   <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-violet-500 shadow-lg">
   <img
-    src="public\photos\IMG_1.jpeg"
+    src="/photos/IMG_1.jpeg"
     alt="Tojo Kattakayam"
     className="w-full h-full object-cover"
   />
