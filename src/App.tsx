@@ -67,19 +67,46 @@ const SKILLS = [
 
 const GALLERY = [
   {
-    src: "public/IMG_9348.JPG.jpeg",
+    src: "/IMG_9348.JPG.jpeg",
     caption: "Backstage with VEDAN",
     size: "md:col-span-2 md:row-span-2",
   },
-  { src: "public/IMG_9349.JPG.jpeg", caption: "GABRI Live at Trivandrum", size: "" },
-  { src: "public/photos/IMG_4249.jpg", caption: "YOGI SEKHAR Live at NIT Calicut", size: "" },
-  { src: "public/photos/IMG_4537.jpg", caption: "VINEETH SREENIVASAN Live at NIT Calicut", size: "" },
-  { src: "public/photos/Sdee.jpg", caption: "SDEE Live at Trivandrum", size: "" },
-  { src: "public/IMG_9484.JPG.jpeg", caption: "VEDAN at Calicut", size: "" },
-  { src: "public/IMG_4406.PNG", caption: "STIC & MC COUPER Live at Kannur", size: "" },
-  { src: "public/IMG_4405.PNG", caption: "SALIM MERCHANT Live at NIT Calicut", size: "" },
+  {
+    src: "/IMG_9349.JPG.jpeg",
+    caption: "GABRI Live at Trivandrum",
+    size: "",
+  },
+  {
+    src: "/photos/IMG_4249.jpg",
+    caption: "YOGI SEKHAR Live at NIT Calicut",
+    size: "",
+  },
+  {
+    src: "/photos/IMG_4537.jpg",
+    caption: "VINEETH SREENIVASAN Live at NIT Calicut",
+    size: "",
+  },
+  {
+    src: "/photos/Sdee.jpg",
+    caption: "SDEE Live at Trivandrum",
+    size: "",
+  },
+  {
+    src: "/IMG_9484.JPG.jpeg",
+    caption: "VEDAN at Calicut",
+    size: "",
+  },
+  {
+    src: "/IMG_4406.PNG",
+    caption: "STIC & MC COUPER Live at Kannur",
+    size: "",
+  },
+  {
+    src: "/IMG_4405.PNG",
+    caption: "SALIM MERCHANT Live at NIT Calicut",
+    size: "",
+  },
 ];
-
 type Repo = {
   id: number;
   name: string;
@@ -198,7 +225,7 @@ export default function App() {
                 </div> */}
                 <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-violet-500 shadow-lg">
   <img
-    src="public\photos\IMG_1.jpeg"
+  src="/photos/IMG_1.jpeg"
     alt="Tojo Kattakayam"
     className="w-full h-full object-cover"
   />
