@@ -64,15 +64,14 @@ const SKILLS = [
   },
 
 ];
-
 const GALLERY = [
   {
-    src: "/IMG_9348.JPG.jpeg",
+    src: "/photos/IMG_9348.JPG.jpeg",
     caption: "Backstage with VEDAN",
     size: "md:col-span-2 md:row-span-2",
   },
   {
-    src: "/IMG_9349.JPG.jpeg",
+    src: "/photos/IMG_9349.JPG.jpeg",
     caption: "GABRI Live at Trivandrum",
     size: "",
   },
@@ -92,17 +91,17 @@ const GALLERY = [
     size: "",
   },
   {
-    src: "/IMG_9484.JPG.jpeg",
+    src: "/photos/IMG_9484.JPG.jpeg",
     caption: "VEDAN at Calicut",
     size: "",
   },
   {
-    src: "/IMG_4406.PNG",
+    src: "/photos/IMG_4406.PNG",
     caption: "STIC & MC COUPER Live at Kannur",
     size: "",
   },
   {
-    src: "/IMG_4405.PNG",
+    src: "/photos/IMG_4405.PNG",
     caption: "SALIM MERCHANT Live at NIT Calicut",
     size: "",
   },
