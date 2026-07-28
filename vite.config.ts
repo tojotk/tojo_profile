@@ -18,7 +18,7 @@ export default defineConfig({
   },
   server: {
     watch: {
-      ignored: ["**/public/photos/**"],
+      ignored: ["**/public/**"],
     },
   },
 });
