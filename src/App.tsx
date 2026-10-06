@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-const NAV_LINKS = ["About", "Profile", "Skills", "Projects", "Photography", "Contact"];
+const NAV_LINKS = ["About", "Profile", "Skills", "Projects", "Contact"];
 
 const SKILLS = [
   {
@@ -62,50 +62,8 @@ const SKILLS = [
       "Time Management",
     ],
   },
+];
 
-];
-const GALLERY = [
-  {
-    src: "/photos/IMG_9348.JPG.jpeg",
-    caption: "Backstage with VEDAN",
-    size: "md:col-span-2 md:row-span-2",
-  },
-  {
-    src: "/photos/IMG_9349.JPG.jpeg",
-    caption: "GABRI Live at Trivandrum",
-    size: "",
-  },
-  {
-    src: "/photos/IMG_4249.jpg",
-    caption: "YOGI SEKHAR Live at NIT Calicut",
-    size: "",
-  },
-  {
-    src: "/photos/IMG_4537.jpg",
-    caption: "VINEETH SREENIVASAN Live at NIT Calicut",
-    size: "",
-  },
-  {
-    src: "/photos/Sdee.jpg",
-    caption: "SDEE Live at Trivandrum",
-    size: "",
-  },
-  {
-    src: "/photos/IMG_9484.JPG.jpeg",
-    caption: "VEDAN at Calicut",
-    size: "",
-  },
-  {
-    src: "/photos/IMG_4406.PNG",
-    caption: "STIC & MC COUPER Live at Kannur",
-    size: "",
-  },
-  {
-    src: "/photos/IMG_4405.PNG",
-    caption: "SALIM MERCHANT Live at NIT Calicut",
-    size: "",
-  },
-];
 type Repo = {
   id: number;
   name: string;
@@ -115,7 +73,6 @@ type Repo = {
 
 export default function App() {
   const [activeSection, setActiveSection] = useState("About");
-  const [lightbox, setLightbox] = useState<string | null>(null);
   const [repos, setRepos] = useState<Repo[]>([]);
 
   useEffect(() => {
@@ -345,66 +302,6 @@ export default function App() {
           </div>
         </div>
       </section>
-
-      {/* Photography */}
-      <section
-        id="photography"
-        className={`${activeSection === "Photography" ? "block" : "hidden"} min-h-screen py-24 px-8`}
-      >
-        <div className="max-w-6xl mx-auto">
-          <SectionHeader title="Photography" subtitle="Concerts · Portraits · Backstage" />
-          <p className="text-center text-gray-400 mt-6 max-w-2xl mx-auto leading-relaxed">
-            Specializing in concert, live event, and artist photography, transforming
-            unforgettable moments into timeless visuals with creativity and precision.
-          </p>
-          <div className="mt-14">
-            <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-3">
-              <span className="text-2xl">📷</span> Photos with Artists
-            </h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 auto-rows-[180px]">
-              {GALLERY.map((photo) => (
-                <button
-                  key={photo.src}
-                  onClick={() => setLightbox(photo.src)}
-                  className={`relative overflow-hidden rounded-2xl group cursor-pointer ${photo.size}`}
-                >
-                  <img
-                    src={photo.src}
-                    alt={photo.caption}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
-                    <p className="text-white text-sm font-medium text-left">{photo.caption}</p>
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
-          <div className="mt-10 bg-gradient-to-r from-violet-950/40 to-sky-950/40 border border-violet-500/20 rounded-2xl p-6 text-center">
-            <p className="text-gray-300 text-sm">
-              🎹 <span className="font-semibold text-violet-300">Available</span>{" "}
-              for concert photography, artist promo shoots &amp; backstage documentation across India.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Lightbox */}
-      {lightbox && (
-        <div
-          onClick={() => setLightbox(null)}
-          className="fixed inset-0 z-[60] bg-black/90 backdrop-blur-sm flex items-center justify-center p-6 cursor-zoom-out"
-        >
-          <img src={lightbox} alt="preview" className="max-h-full max-w-full rounded-2xl shadow-2xl" />
-          <button
-            className="absolute top-6 right-6 text-white text-3xl w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center"
-            onClick={() => setLightbox(null)}
-          >
-            ×
-          </button>
-        </div>
-      )}
 
       {/* Contact */}
       <section
