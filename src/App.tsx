@@ -1,7 +1,7 @@
-import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import Scene from "./components/Scene";
 import HeroTerminal from "./components/HeroTerminal";
-import { CursorFX, GhostNum, Icon, Loader, Magnetic, Reveal, ScrollProgress, SectionHeader, Tilt } from "./components/ui";
+import { CursorFX, GhostNum, Icon, Loader, Magnetic, Reveal, ScrollProgress, ScrollSkew, SectionHeader, Sky, Tilt } from "./components/ui";
 
 const NAV_LINKS = ["About", "Services", "Skills", "Projects", "Experience", "Profile", "Contact"] as const;
 
@@ -388,6 +388,8 @@ export default function App() {
   const [active, setActive] = useState(0);
   const [scrolled, setScrolled] = useState(false);
   const [ready, setReady] = useState(false);
+  const navRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const [pill, setPill] = useState({ left: 0, width: 0 });
   const DESIGN_WIDTH = 1280;
   const [canvasScale, setCanvasScale] = useState(1);
 
@@ -428,6 +430,17 @@ export default function App() {
     };
   }, [canvasScale]);
 
+  useLayoutEffect(() => {
+    const place = () => {
+      const el = navRefs.current[active];
+      if (el) setPill({ left: el.offsetLeft, width: el.offsetWidth });
+    };
+    place();
+    document.fonts?.ready.then(place);
+    window.addEventListener("resize", place);
+    return () => window.removeEventListener("resize", place);
+  }, [active, canvasScale]);
+
   const go = (id: string) => {
     document.getElementById(id.toLowerCase())?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
@@ -437,6 +450,8 @@ export default function App() {
       <Loader onDone={() => setReady(true)} />
       <ScrollProgress />
       <CursorFX />
+      <Sky />
+      <ScrollSkew />
       <Scene activeIndex={active} />
 
       {/* ================= Fixed Navbar ================= */}
@@ -453,13 +468,21 @@ export default function App() {
           }`}
           aria-label="Primary"
         >
-          <ul className="flex items-center justify-center gap-1">
+          <ul className="relative flex items-center justify-center gap-1">
+            <span
+              aria-hidden="true"
+              className="nav-pill"
+              style={{ transform: `translateX(${pill.left}px)`, width: pill.width }}
+            />
             {NAV_LINKS.map((link, i) => (
               <li key={link}>
                 <button
+                  ref={(el) => {
+                    navRefs.current[i] = el;
+                  }}
                   onClick={() => go(link)}
-                  className={`font-display rounded-full px-5 py-2.5 text-[11px] font-semibold uppercase tracking-[0.18em] transition-colors ${
-                    active === i ? "bg-white/10 text-white" : "text-gray-400 hover:text-white"
+                  className={`font-display relative z-10 rounded-full px-5 py-2.5 text-[11px] font-semibold uppercase tracking-[0.18em] transition-colors ${
+                    active === i ? "text-white" : "text-gray-400 hover:text-white"
                   }`}
                 >
                   {link}
@@ -651,7 +674,7 @@ export default function App() {
                   {service.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="rounded-lg border border-white/10 bg-white/[0.035] px-2.5 py-1.5 font-mono text-[10px] text-gray-300 transition-all duration-300 group-hover:border-white/15"
+                      className="chip rounded-lg border border-white/10 bg-white/[0.035] px-2.5 py-1.5 font-mono text-[10px] text-gray-300 transition-all duration-300 group-hover:border-white/15"
                     >
                       {tag}
                     </span>
@@ -692,6 +715,13 @@ export default function App() {
 
         </div>
 
+        <div className="flow-track" aria-hidden="true">
+          <span className="flow-line" />
+          <span className="flow-dot" />
+          {[12.5, 37.5, 62.5, 87.5].map((l, n) => (
+            <span key={l} className="flow-node" style={{ left: `${l}%`, "--n": n } as CSSProperties} />
+          ))}
+        </div>
         <div className="grid grid-cols-4 gap-3">
 
           {PIPELINE.map((p, i) => {
@@ -766,7 +796,7 @@ export default function App() {
                         {group.items.map((skill) => (
                           <span
                             key={skill}
-                            className="cursor-default rounded-lg border border-white/10 bg-white/[0.04] px-3 py-1.5 text-sm text-gray-300 transition-colors hover:border-azure-400/50 hover:bg-azure-500/15 hover:text-white"
+                            className="chip cursor-default rounded-lg border border-white/10 bg-white/[0.04] px-3 py-1.5 text-sm text-gray-300 transition-colors hover:border-azure-400/50 hover:bg-azure-500/15 hover:text-white"
                           >
                             {skill}
                           </span>
@@ -884,7 +914,7 @@ export default function App() {
                 {project.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="rounded-lg border border-white/10 bg-white/[0.035] px-2.5 py-1.5 font-mono text-[10px] text-gray-300 transition-all duration-300 group-hover:border-frost-300/15 group-hover:text-gray-200"
+                    className="chip rounded-lg border border-white/10 bg-white/[0.035] px-2.5 py-1.5 font-mono text-[10px] text-gray-300 transition-all duration-300 group-hover:border-frost-300/15 group-hover:text-gray-200"
                   >
                     {tag}
                   </span>
@@ -1178,7 +1208,15 @@ export default function App() {
               />
             </div>
 
-            <footer className="mt-24 flex flex-row items-center justify-between gap-3 border-t border-white/10 pt-8 text-sm text-gray-500 flex-row">
+            <div className="marquee giant-marquee mt-20" aria-hidden="true">
+              <div className="marquee-track giant-track">
+                {Array.from({ length: 6 }, (_, i) => (
+                  <span key={i}>Tojo Tom Kattakayam <b>✦</b></span>
+                ))}
+              </div>
+            </div>
+
+            <footer className="mt-12 flex flex-row items-center justify-between gap-3 border-t border-white/10 pt-8 text-sm text-gray-500 flex-row">
               <p>© {new Date().getFullYear()} Tojo Tom Kattakayam</p>
               <p>AI &amp; ML · Full-Stack Python · Kozhikode, India</p>
             </footer>

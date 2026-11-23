@@ -901,3 +901,305 @@ body::after {
     animation: none;
   }
 }
+
+
+/* =====================================================
+   BATCH 3: nav pill, skew, sky, flow line, chips, marquee
+   ===================================================== */
+
+/* sliding nav indicator */
+.nav-pill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(143, 184, 255, 0.16), rgba(74, 128, 240, 0.08));
+  border: 1px solid rgba(143, 184, 255, 0.22);
+  box-shadow: 0 0 22px -6px rgba(74, 128, 240, 0.55);
+  transition: transform 0.55s cubic-bezier(0.3, 1.25, 0.4, 1), width 0.55s cubic-bezier(0.3, 1.25, 0.4, 1);
+  pointer-events: none;
+}
+
+/* sections lean into the scroll direction */
+main > section:not(#about) > div {
+  transform: skewY(var(--sk, 0deg));
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+
+/* aurora + shooting stars */
+.sky {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.aurora {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.14;
+  will-change: transform;
+}
+.aurora.a1 {
+  width: 46vw;
+  height: 32vw;
+  left: -8vw;
+  top: 10vh;
+  background: radial-gradient(closest-side, #2a5fd6, transparent);
+  animation: drift-a 22s ease-in-out infinite alternate;
+}
+.aurora.a2 {
+  width: 40vw;
+  height: 30vw;
+  right: -6vw;
+  top: 40vh;
+  background: radial-gradient(closest-side, #3fb0f5, transparent);
+  animation: drift-b 28s ease-in-out infinite alternate;
+}
+.aurora.a3 {
+  width: 36vw;
+  height: 26vw;
+  left: 30vw;
+  bottom: -8vh;
+  background: radial-gradient(closest-side, #5b95fa, transparent);
+  animation: drift-a 34s ease-in-out infinite alternate-reverse;
+}
+@keyframes drift-a {
+  to {
+    transform: translate3d(12vw, 8vh, 0) scale(1.25) rotate(25deg);
+  }
+}
+@keyframes drift-b {
+  to {
+    transform: translate3d(-14vw, -10vh, 0) scale(1.2) rotate(-20deg);
+  }
+}
+.shoot {
+  position: absolute;
+  width: 140px;
+  height: 1.5px;
+  border-radius: 2px;
+  opacity: 0;
+  background: linear-gradient(90deg, rgba(179, 224, 255, 0), rgba(179, 224, 255, 0.9));
+  transform: rotate(-38deg);
+  filter: drop-shadow(0 0 6px rgba(110, 200, 255, 0.8));
+  animation: shoot var(--dur, 10s) linear infinite;
+  animation-delay: var(--del, 0s);
+}
+@keyframes shoot {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) rotate(-38deg);
+  }
+  2% {
+    opacity: 1;
+  }
+  9% {
+    opacity: 0;
+    transform: translate3d(-520px, 400px, 0) rotate(-38deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(-520px, 400px, 0) rotate(-38deg);
+  }
+}
+
+/* workflow flow line with travelling pulse */
+.flow-track {
+  position: relative;
+  height: 14px;
+  margin-bottom: 0.9rem;
+}
+.flow-line {
+  position: absolute;
+  left: 12.5%;
+  right: 12.5%;
+  top: 6px;
+  height: 2px;
+  background: repeating-linear-gradient(90deg, rgba(143, 184, 255, 0.35) 0 8px, transparent 8px 16px);
+  animation: dash-move 1.2s linear infinite;
+  background-size: 16px 2px;
+}
+@keyframes dash-move {
+  to {
+    background-position: 16px 0;
+  }
+}
+.flow-node {
+  position: absolute;
+  top: 1px;
+  width: 12px;
+  height: 12px;
+  margin-left: -6px;
+  border-radius: 50%;
+  border: 2px solid #6ec8ff;
+  background: #050914;
+  box-shadow: 0 0 12px rgba(110, 200, 255, 0.6);
+  animation: node-pulse 4s ease-in-out infinite;
+  animation-delay: calc(var(--n) * 1s);
+}
+@keyframes node-pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  12% {
+    transform: scale(1.5);
+    background: #8fb8ff;
+  }
+  30% {
+    transform: scale(1);
+  }
+}
+.flow-dot {
+  position: absolute;
+  top: 3px;
+  left: 12.5%;
+  width: 8px;
+  height: 8px;
+  margin-left: -4px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 14px 4px rgba(143, 184, 255, 0.9);
+  animation: flow-travel 4s linear infinite;
+}
+@keyframes flow-travel {
+  to {
+    left: 87.5%;
+  }
+}
+
+/* chips cascade in with a springy pop */
+.reveal .chip {
+  opacity: 0;
+  transform: translateY(12px) scale(0.6);
+  transition:
+    opacity 0.5s ease,
+    transform 0.65s cubic-bezier(0.3, 1.6, 0.5, 1),
+    border-color 0.2s,
+    background 0.2s,
+    color 0.2s;
+  transition-delay: calc(var(--n, 0) * 55ms + 350ms);
+}
+.reveal.in .chip {
+  opacity: 1;
+  transform: none;
+}
+.reveal.in .chip:hover {
+  transform: translateY(-3px) scale(1.05);
+  transition-delay: 0s;
+  transition-duration: 0.25s;
+}
+.chip:nth-child(1) { --n: 1; }
+.chip:nth-child(2) { --n: 2; }
+.chip:nth-child(3) { --n: 3; }
+.chip:nth-child(4) { --n: 4; }
+.chip:nth-child(5) { --n: 5; }
+.chip:nth-child(6) { --n: 6; }
+.chip:nth-child(7) { --n: 7; }
+.chip:nth-child(8) { --n: 8; }
+.chip:nth-child(9) { --n: 9; }
+.chip:nth-child(10) { --n: 10; }
+.chip:nth-child(11) { --n: 11; }
+.chip:nth-child(12) { --n: 12; }
+.chip:nth-child(13) { --n: 13; }
+.chip:nth-child(14) { --n: 14; }
+.chip:nth-child(15) { --n: 15; }
+.chip:nth-child(16) { --n: 16; }
+.chip:nth-child(17) { --n: 17; }
+.chip:nth-child(18) { --n: 18; }
+.chip:nth-child(19) { --n: 19; }
+.chip:nth-child(20) { --n: 20; }
+
+/* hero portrait: RGB-split glitch on hover */
+.hero-figure img {
+  cursor: crosshair;
+}
+.hero-figure:hover img {
+  animation: rgb-split 0.55s steps(2, end) 1;
+}
+@keyframes rgb-split {
+  0% {
+    filter: drop-shadow(-5px 0 0 rgba(255, 60, 120, 0.55)) drop-shadow(5px 0 0 rgba(60, 200, 255, 0.55));
+    transform: translate(2px, 0);
+  }
+  25% {
+    filter: drop-shadow(6px 0 0 rgba(255, 60, 120, 0.5)) drop-shadow(-6px 0 0 rgba(60, 200, 255, 0.5));
+    transform: translate(-3px, 1px);
+    clip-path: inset(10% 0 55% 0);
+  }
+  50% {
+    filter: drop-shadow(-3px 0 0 rgba(255, 60, 120, 0.45)) drop-shadow(3px 0 0 rgba(60, 200, 255, 0.45));
+    transform: translate(1px, -1px);
+    clip-path: inset(50% 0 10% 0);
+  }
+  75% {
+    filter: drop-shadow(4px 0 0 rgba(255, 60, 120, 0.4)) drop-shadow(-4px 0 0 rgba(60, 200, 255, 0.4));
+    transform: translate(-1px, 0);
+    clip-path: inset(0 0 0 0);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+/* giant outlined name marquee */
+.giant-marquee {
+  padding: 0.5rem 0;
+}
+.giant-track {
+  gap: 3rem;
+  animation-duration: 55s;
+}
+.giant-track span {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 6.5rem;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(143, 184, 255, 0.28);
+  transition: color 0.4s ease, -webkit-text-stroke-color 0.4s ease;
+}
+.giant-track span b {
+  font-weight: 400;
+  margin-left: 3rem;
+  -webkit-text-stroke: 0;
+  color: rgba(110, 200, 255, 0.45);
+}
+.giant-track span:hover {
+  color: rgba(143, 184, 255, 0.12);
+  -webkit-text-stroke-color: rgba(179, 224, 255, 0.8);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  main > section:not(#about) > div {
+    transform: none;
+  }
+  .aurora,
+  .shoot,
+  .flow-line,
+  .flow-dot,
+  .flow-node,
+  .giant-track {
+    animation: none;
+  }
+  .reveal .chip {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+@keyframes giant-scroll {
+  to {
+    transform: translateX(calc(-50% - 1.5rem));
+  }
+}
+.giant-track {
+  animation-name: giant-scroll;
+}

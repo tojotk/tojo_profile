@@ -493,3 +493,55 @@ export const Icon = {
     </svg>
   ),
 };
+
+/* ---------------- Scroll-speed skew (sections lean into the scroll) ---------------- */
+export function ScrollSkew() {
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const root = document.documentElement;
+    let last = window.scrollY;
+    let lastT = performance.now();
+    let v = 0;
+    let cur = 0;
+    let raf = 0;
+    const loop = () => {
+      raf = requestAnimationFrame(loop);
+      const now = performance.now();
+      const dt = Math.min((now - lastT) / 1000, 0.1);
+      lastT = now;
+      const y = window.scrollY;
+      const speed = dt > 0 ? (y - last) / dt : 0; // px per second
+      last = y;
+      v += (speed - v) * (1 - Math.exp(-dt * 10));
+      const target = Math.max(-2.2, Math.min(2.2, v * 0.0016));
+      cur += (target - cur) * (1 - Math.exp(-dt * 9));
+      root.style.setProperty("--sk", `${cur.toFixed(3)}deg`);
+    };
+    loop();
+    return () => {
+      cancelAnimationFrame(raf);
+      root.style.removeProperty("--sk");
+    };
+  }, []);
+  return null;
+}
+
+/* ---------------- Sky: aurora + shooting stars ---------------- */
+export function Sky() {
+  const stars = [
+    { top: "8%", left: "62%", dur: "9s", del: "2s" },
+    { top: "22%", left: "88%", dur: "13s", del: "6s" },
+    { top: "5%", left: "30%", dur: "11s", del: "9s" },
+    { top: "35%", left: "70%", dur: "15s", del: "12s" },
+  ];
+  return (
+    <div className="sky" aria-hidden="true">
+      <i className="aurora a1" />
+      <i className="aurora a2" />
+      <i className="aurora a3" />
+      {stars.map((s, i) => (
+        <b key={i} className="shoot" style={{ top: s.top, left: s.left, "--dur": s.dur, "--del": s.del } as CSSProperties} />
+      ))}
+    </div>
+  );
+}
