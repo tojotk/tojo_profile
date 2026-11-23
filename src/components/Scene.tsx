@@ -332,7 +332,7 @@ export default function Scene({ activeIndex }: Props) {
         ][i] ?? { x: 0, y: 3, s: 0.5, op: 0.12 };
       }
       return [
-        { x: W * 0.24, y: 0, s: 1, op: 1 },
+        { x: 0, y: 0.2, s: 1.12, op: 0.8 },
         { x: -W * 0.43, y: 0.4, s: 0.55, op: 0.26 },
         { x: W * 0.45, y: 0.2, s: 0.55, op: 0.24 },
         { x: -W * 0.46, y: -0.3, s: 0.52, op: 0.22 },

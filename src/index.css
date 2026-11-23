@@ -289,3 +289,20 @@ body::before {
   font-size: 12px;
   line-height: 1.7;
 }
+
+/* ---------- hero (centered figure) ---------- */
+.hero-glow {
+  position: absolute;
+  left: 50%;
+  top: 58%;
+  width: min(95vw, 62rem);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(closest-side, rgba(34, 211, 238, 0.3), rgba(99, 102, 241, 0.16) 48%, transparent 74%);
+  filter: blur(8px);
+  pointer-events: none;
+}
+.hero-figure {
+  -webkit-mask-image: linear-gradient(to bottom, #000 82%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 82%, transparent 100%);
+}
