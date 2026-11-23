@@ -29,7 +29,7 @@ const MARQUEE = [
 
 const SERVICES = [
   {
-    icon: Icon.Cpu,
+    icon: Icon.Target,
     number: "01",
     title: "AI & Machine Learning",
     subtitle: "Intelligent systems from data to prediction",
@@ -215,7 +215,7 @@ const FEATURED_PROJECTS = [
 
 const PIPELINE = [
   { icon: Icon.Database, label: "Data", text: "Collect, clean & explore" },
-  { icon: Icon.Cpu, label: "Model", text: "Train & evaluate" },
+  { icon: Icon.Target, label: "Model", text: "Train & evaluate" },
   { icon: Icon.Code, label: "Backend", text: "Django & MySQL" },
   { icon: Icon.Layers, label: "Interface", text: "Responsive web UI" },
 ];
@@ -223,7 +223,7 @@ const PIPELINE = [
 const SKILLS = [
   {
     category: "AI & Machine Learning",
-    icon: Icon.Cpu,
+    icon: Icon.Target,
     items: [
       "Machine Learning",
       "Supervised Learning",
@@ -261,7 +261,7 @@ const SKILLS = [
   },
   {
     category: "Generative AI & LLM",
-    icon: Icon.Cpu,
+    icon: Icon.Target,
     items: [
       "Generative AI",
       "Large Language Models",

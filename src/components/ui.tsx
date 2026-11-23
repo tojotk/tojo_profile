@@ -412,13 +412,13 @@ export const Icon = {
       <circle cx="12" cy="13" r="3" />
     </svg>
   ),
-  Cpu: ({ className }: IconProps) => (
-    <svg {...base} className={className}>
-      <rect x="4" y="4" width="16" height="16" rx="2" />
-      <rect x="9" y="9" width="6" height="6" />
-      <path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3" />
-    </svg>
-  ),
+  // Cpu: ({ className }: IconProps) => (
+  //   <svg {...base} className={className}>
+  //     <rect x="4" y="4" width="16" height="16" rx="2" />
+  //     <rect x="9" y="9" width="6" height="6" />
+  //     <path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3" />
+  //   </svg>
+  // ),
   Code: ({ className }: IconProps) => (
     <svg {...base} className={className}>
       <path d="m16 18 6-6-6-6" />
