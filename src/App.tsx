@@ -1724,6 +1724,9 @@ export default function App() {
   /* scroll spy */
   useEffect(() => {
     const els = NAV_LINKS.map((l) => document.getElementById(l.toLowerCase())).filter(Boolean) as HTMLElement[];
+    els.forEach((el) => {
+      el.style.scrollMarginTop = `${Math.max(48, 84 * canvasScale)}px`;
+    });
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
@@ -1740,7 +1743,7 @@ export default function App() {
       io.disconnect();
       window.removeEventListener("scroll", onScroll);
     };
-  }, []);
+  }, [canvasScale]);
 
   const go = (id: string) => {
     document.getElementById(id.toLowerCase())?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -1750,6 +1753,37 @@ export default function App() {
     <div className="relative min-h-screen w-full overflow-x-hidden font-sans text-gray-200">
       <Scene activeIndex={active} />
 
+      {/* ================= Fixed Navbar ================= */}
+      <header
+        className="fixed left-1/2 top-3 z-[100]"
+        style={{
+          transform: `translateX(-50%) scale(${canvasScale})`,
+          transformOrigin: "top center",
+        }}
+      >
+        <nav
+          className={`glass flex w-fit items-center justify-center rounded-full px-5 py-2.5 transition-all duration-300 ${
+            scrolled ? "shadow-2xl shadow-black/50" : ""
+          }`}
+          aria-label="Primary"
+        >
+          <ul className="flex items-center justify-center gap-1">
+            {NAV_LINKS.map((link, i) => (
+              <li key={link}>
+                <button
+                  onClick={() => go(link)}
+                  className={`rounded-full px-5 py-2.5 text-base font-medium transition-colors ${
+                    active === i ? "bg-white/10 text-white" : "text-gray-400 hover:text-white"
+                  }`}
+                >
+                  {link}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </header>
+
       <div
         className="portfolio-canvas relative mx-auto"
         style={{
@@ -1758,31 +1792,6 @@ export default function App() {
           transformOrigin: "top center",
         }}
       >
-        {/* ================= Navbar ================= */}
-        <header className="sticky top-3 z-[100] flex justify-center px-4">
-          <nav
-            className={`glass flex w-fit items-center justify-center rounded-full px-5 py-2.5 transition-all duration-300 ${
-              scrolled ? "shadow-2xl shadow-black/50" : ""
-            }`}
-            aria-label="Primary"
-          >
-            <ul className="flex items-center justify-center gap-1">
-              {NAV_LINKS.map((link, i) => (
-                <li key={link}>
-                  <button
-                    onClick={() => go(link)}
-                    className={`rounded-full px-5 py-2.5 text-base font-medium transition-colors ${
-                      active === i ? "bg-white/10 text-white" : "text-gray-400 hover:text-white"
-                    }`}
-                  >
-                    {link}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </header>
-
       <main className="relative z-10">
         {/* ================= Hero / About ================= */}
         <section id="about" className="relative min-h-[100dvh] overflow-hidden px-10 pt-24">
