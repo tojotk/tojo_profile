@@ -1,4 +1,4 @@
-import { useEffect, useRef, type CSSProperties, type ReactNode, type PointerEvent } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode, type PointerEvent } from "react";
 
 /* ---------------- Reveal on scroll ---------------- */
 export function Reveal({
@@ -82,17 +82,188 @@ export function Tilt({
   );
 }
 
+
+/* ---------------- Split text (letter-by-letter 3D rise) ---------------- */
+export function SplitText({ text, base = 0, className = "", gradient = false }: { text: string; base?: number; className?: string; gradient?: boolean }) {
+  let n = 0;
+  const len = Array.from(text.replace(/ /g, "")).length;
+  return (
+    <span className={`split-line ${gradient ? "split-grad" : ""} ${className}`} aria-label={text} style={{ "--base": `${base}ms`, "--len": len } as CSSProperties}>
+      {text.split(" ").map((word, w, arr) => (
+        <span key={w} aria-hidden="true" className="whitespace-nowrap inline-block">
+          {Array.from(word).map((ch) => (
+            <span key={n} className="split-char" style={{ "--i": n++ } as CSSProperties}>
+              {ch}
+            </span>
+          ))}
+          {w < arr.length - 1 ? "\u00A0" : ""}
+        </span>
+      ))}
+    </span>
+  );
+}
+
+/* ---------------- Scroll progress bar ---------------- */
+export function ScrollProgress() {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const h = document.documentElement.scrollHeight - window.innerHeight;
+      const p = h > 0 ? Math.min(1, Math.max(0, window.scrollY / h)) : 0;
+      ref.current?.style.setProperty("--p", p.toFixed(4));
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
+  return <div ref={ref} className="scroll-progress" aria-hidden="true" />;
+}
+
+/* ---------------- Cursor aura + ring ---------------- */
+export function CursorFX() {
+  const aura = useRef<HTMLDivElement>(null);
+  const dot = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (window.matchMedia("(hover: none), (pointer: coarse)").matches) return;
+    const t = { x: -999, y: -999 };
+    const a = { x: -999, y: -999 };
+    const d = { x: -999, y: -999 };
+    let raf = 0;
+    const onMove = (e: globalThis.PointerEvent) => {
+      t.x = e.clientX;
+      t.y = e.clientY;
+      const el = e.target as HTMLElement | null;
+      dot.current?.classList.toggle("is-link", !!el?.closest("a,button,[role=button]"));
+    };
+    const loop = () => {
+      raf = requestAnimationFrame(loop);
+      a.x += (t.x - a.x) * 0.08;
+      a.y += (t.y - a.y) * 0.08;
+      d.x += (t.x - d.x) * 0.3;
+      d.y += (t.y - d.y) * 0.3;
+      aura.current?.style.setProperty("--cx", `${a.x.toFixed(1)}px`);
+      aura.current?.style.setProperty("--cy", `${a.y.toFixed(1)}px`);
+      dot.current?.style.setProperty("--dx", `${d.x.toFixed(1)}px`);
+      dot.current?.style.setProperty("--dy", `${d.y.toFixed(1)}px`);
+    };
+    window.addEventListener("pointermove", onMove, { passive: true });
+    loop();
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("pointermove", onMove);
+    };
+  }, []);
+  return (
+    <>
+      <div ref={aura} className="cursor-aura" aria-hidden="true" />
+      <div ref={dot} className="cursor-dot" aria-hidden="true" />
+    </>
+  );
+}
+
+/* ---------------- Intro loader ---------------- */
+export function Loader({ onDone }: { onDone?: () => void }) {
+  const [done, setDone] = useState(false);
+  const [gone, setGone] = useState(false);
+  useEffect(() => {
+    const ready = new Promise<void>((res) => {
+      if (document.readyState === "complete") res();
+      else window.addEventListener("load", () => res(), { once: true });
+    });
+    const min = new Promise<void>((res) => setTimeout(res, 1300));
+    const cap = new Promise<void>((res) => setTimeout(res, 4000));
+    Promise.race([Promise.all([ready, min]), cap]).then(() => {
+      setDone(true);
+      onDone?.();
+      setTimeout(() => setGone(true), 1100);
+    });
+  }, [onDone]);
+  if (gone) return null;
+  return (
+    <div className={`loader ${done ? "done" : ""}`} role="status" aria-label="Loading portfolio">
+      <div className="text-center" style={{ perspective: "600px" }}>
+        <div className="loader-mark mx-auto" />
+        <div className="loader-bar" />
+        <p className="font-display mt-5 text-[11px] uppercase tracking-[0.5em] text-gold-300/80">Tojo Tom</p>
+      </div>
+    </div>
+  );
+}
+
+/* ---------------- Magnetic wrapper (pulls toward the cursor) ---------------- */
+export function Magnetic({ children, strength = 0.28, className = "" }: { children: ReactNode; strength?: number; className?: string }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const onMove = (e: PointerEvent<HTMLSpanElement>) => {
+    if (e.pointerType !== "mouse") return;
+    const el = ref.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    const x = (e.clientX - (r.left + r.width / 2)) * strength;
+    const y = (e.clientY - (r.top + r.height / 2)) * strength;
+    el.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0)`;
+  };
+  const onLeave = () => {
+    if (ref.current) ref.current.style.transform = "translate3d(0,0,0)";
+  };
+  return (
+    <span ref={ref} onPointerMove={onMove} onPointerLeave={onLeave} className={`magnetic inline-block ${className}`}>
+      {children}
+    </span>
+  );
+}
+
+/* ---------------- Scroll-parallax ghost numeral ---------------- */
+export function GhostNum({ children, className = "" }: { children: ReactNode; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const el = ref.current;
+      if (!el) return;
+      const r = el.parentElement?.getBoundingClientRect();
+      if (!r) return;
+      const mid = r.top + r.height / 2 - window.innerHeight / 2;
+      el.style.setProperty("--py", `${(mid * -0.18).toFixed(1)}px`);
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, []);
+  return (
+    <div ref={ref} className={`ghost-num ${className}`} aria-hidden="true">
+      {children}
+    </div>
+  );
+}
+
 /* ---------------- Section header ---------------- */
 export function SectionHeader({ eyebrow, title, intro, num }: { eyebrow: string; title: string; intro?: string; num?: string }) {
   return (
     <Reveal className="max-w-2xl">
       <p className="eyebrow flex items-center gap-3">
-        {num && <span className="font-mono text-[11px] text-cyan-300/80">{num}</span>}
+        {num && <span className="font-mono text-[11px] text-ice-300/80">{num}</span>}
         {num && <span className="h-px w-8 bg-white/20" />}
         {eyebrow}
       </p>
       <h2 className="font-display mt-3 text-4xl font-bold tracking-tight text-white md:text-5xl">{title}</h2>
-      <div className="mt-5 h-[3px] w-14 rounded-full bg-gradient-to-r from-violet-500 to-cyan-400" />
+      <div className="bar-grow mt-5 h-[3px] w-14 rounded-full bg-gradient-to-r from-gold-500 to-ice-400" />
       {intro && <p className="mt-6 text-base leading-relaxed text-gray-400 md:text-lg">{intro}</p>}
     </Reveal>
   );

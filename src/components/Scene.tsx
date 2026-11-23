@@ -11,8 +11,8 @@ type Props = { activeIndex: number };
 
 type Target = { x: number; y: number; s: number; op: number };
 
-const ACCENT_A = new THREE.Color("#8b5cf6"); // violet
-const ACCENT_B = new THREE.Color("#22d3ee"); // cyan
+const ACCENT_A = new THREE.Color("#e5b94f"); // champagne gold
+const ACCENT_B = new THREE.Color("#4fd8b9"); // emerald ice
 
 function makeSprite() {
   const c = document.createElement("canvas");
@@ -285,7 +285,7 @@ export default function Scene({ activeIndex }: Props) {
     const dustMat = new THREE.PointsMaterial({
       map: sprite,
       size: 0.09,
-      color: 0x9aa4ff,
+      color: 0xf3dfaa,
       transparent: true,
       opacity: 0.55,
       depthWrite: false,
@@ -294,6 +294,49 @@ export default function Scene({ activeIndex }: Props) {
     const dust = new THREE.Points(dustGeo, dustMat);
     scene.add(dust);
     disposables.push(dustGeo, dustMat);
+
+    /* ---------- floating crystal shards (depth layers) ---------- */
+    const shardGeos = [
+      new THREE.OctahedronGeometry(1, 0),
+      new THREE.TetrahedronGeometry(1, 0),
+      new THREE.IcosahedronGeometry(1, 0),
+    ];
+    const shardGroup = new THREE.Group();
+    scene.add(shardGroup);
+    type Shard = { mesh: THREE.Group; spin: THREE.Vector3; base: THREE.Vector3; depth: number; phase: number };
+    const shards: Shard[] = [];
+    const shardMats: THREE.Material[] = [];
+    const SHARDS = 18;
+    for (let i = 0; i < SHARDS; i++) {
+      const geo = shardGeos[i % shardGeos.length];
+      const col = i % 3 === 0 ? ACCENT_B : ACCENT_A;
+      const g = new THREE.Group();
+      const wire = new THREE.LineSegments(
+        new THREE.EdgesGeometry(geo),
+        new THREE.LineBasicMaterial({ color: col, transparent: true, opacity: 0.55, blending: THREE.AdditiveBlending, depthWrite: false })
+      );
+      const face = new THREE.Mesh(
+        geo,
+        new THREE.MeshBasicMaterial({ color: col, transparent: true, opacity: 0.05, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide })
+      );
+      g.add(wire, face);
+      const sc = 0.12 + Math.random() * 0.34;
+      g.scale.setScalar(sc);
+      const depth = -Math.random() * 9 - 0.5;
+      const base = new THREE.Vector3((Math.random() - 0.5) * 22, (Math.random() - 0.5) * 12, depth);
+      g.position.copy(base);
+      shardGroup.add(g);
+      shards.push({
+        mesh: g,
+        spin: new THREE.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).multiplyScalar(0.7),
+        base,
+        depth,
+        phase: Math.random() * Math.PI * 2,
+      });
+      shardMats.push(wire.material as THREE.Material, face.material as THREE.Material);
+      disposables.push(wire.geometry, wire.material, face.material);
+    }
+    shardGeos.forEach((g) => disposables.push(g));
 
     /* ---------- layout / interaction ---------- */
     let width = 1;
@@ -370,6 +413,11 @@ export default function Scene({ activeIndex }: Props) {
       root.position.set(cur.x + mouse.x * 0.25, cur.y - mouse.y * 0.18 - scrollY * 0.0004, 0);
       root.scale.setScalar(cur.s);
 
+      camera.position.z = 9 - Math.min(scrollY / 6000, 1) * 1.2;
+      camera.position.x = mouse.x * 0.35;
+      camera.position.y = -mouse.y * 0.25;
+      camera.lookAt(0, 0, 0);
+
       net.rotation.y = time * 0.12 + scrollY * 0.0012 + mouse.x * 0.35;
       net.rotation.x = Math.sin(time * 0.15) * 0.12 + mouse.y * 0.22;
       core.rotation.x = time * 0.5;
@@ -414,6 +462,7 @@ export default function Scene({ activeIndex }: Props) {
       coreMat.opacity = 0.85 * cur.op;
       haloMat.opacity = 0.55 * cur.op;
       ringMats.forEach((m) => (m.opacity = 0.5 * cur.op));
+      shardMats.forEach((m, i) => (m.opacity = (i % 2 === 0 ? 0.5 : 0.05) * (0.55 + cur.op * 0.45)));
       (rings[0].userData.sat as THREE.Sprite).material.opacity = cur.op;
       (rings[1].userData.sat as THREE.Sprite).material.opacity = cur.op;
 
@@ -421,6 +470,19 @@ export default function Scene({ activeIndex }: Props) {
       dust.position.y = scrollY * 0.0016;
       dust.rotation.y = time * 0.01 + mouse.x * 0.05;
       dust.position.x = -mouse.x * 0.3;
+
+      // shards: slow tumble, bobbing, parallax by depth (near ones move more)
+      shards.forEach((sh) => {
+        const par = 1 / (1 - sh.depth * 0.18);
+        sh.mesh.rotation.x += sh.spin.x * dt * motion;
+        sh.mesh.rotation.y += sh.spin.y * dt * motion;
+        sh.mesh.rotation.z += sh.spin.z * dt * motion;
+        sh.mesh.position.set(
+          sh.base.x - mouse.x * 1.4 * par,
+          sh.base.y + Math.sin(time * 0.5 + sh.phase) * 0.35 + scrollY * 0.0012 * par * 3 - mouse.y * 0.9 * par,
+          sh.base.z
+        );
+      });
 
       renderer.render(scene, camera);
     };
