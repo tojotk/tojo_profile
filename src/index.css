@@ -306,3 +306,39 @@ body::before {
   -webkit-mask-image: linear-gradient(to bottom, #000 82%, transparent 100%);
   mask-image: linear-gradient(to bottom, #000 82%, transparent 100%);
 }
+
+
+/* ---------- portfolio polish ---------- */
+.project-card {
+  overflow: hidden;
+  isolation: isolate;
+}
+.project-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(420px 220px at 100% 0%, rgba(34, 211, 238, 0.08), transparent 65%),
+    radial-gradient(380px 220px at 0% 100%, rgba(139, 92, 246, 0.08), transparent 65%);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+.project-card:hover::before,
+.project-featured::before {
+  opacity: 1;
+}
+.project-featured {
+  min-height: 20rem;
+  border-color: rgba(103, 232, 249, 0.16);
+}
+@media (max-width: 767px) {
+  .project-featured {
+    min-height: 18rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .project-card::before {
+    transition: none;
+  }
+}
