@@ -99,7 +99,7 @@ function knotPoints(
       varying vec3 vCol; varying float vGlow;
       void main(){
         float a = texture2D(uMap, gl_PointCoord).a;
-        gl_FragColor = vec4(vCol * (0.7 + vGlow * 1.3), a * uOpacity * (0.22 + vGlow * 0.78));
+        gl_FragColor = vec4(vCol * (0.5 + vGlow * 0.8), a * uOpacity * (0.14 + vGlow * 0.5));
       }`,
   });
   return { points: new THREE.Points(g, m), geo: g, mat: m };
@@ -191,7 +191,7 @@ export default function Scene({ activeIndex }: Props) {
       map: sprite,
       color: ACCENT_A,
       transparent: true,
-      opacity: 0.5,
+      opacity: 0.22,
       blending: THREE.AdditiveBlending,
       depthWrite: false,
     });
@@ -249,10 +249,10 @@ export default function Scene({ activeIndex }: Props) {
     dustGeo.setAttribute("position", new THREE.BufferAttribute(dPos, 3));
     const dustMat = new THREE.PointsMaterial({
       map: sprite,
-      size: 0.09,
-      color: 0xb8d4ff,
+      size: 0.08,
+      color: 0x9bb8e8,
       transparent: true,
-      opacity: 0.55,
+      opacity: 0.35,
       depthWrite: false,
       blending: THREE.AdditiveBlending,
     });
@@ -412,7 +412,7 @@ export default function Scene({ activeIndex }: Props) {
       core.rotation.x = time * 0.8;
       core.rotation.y = time * 1.1;
       core.scale.setScalar(1 + Math.sin(time * 1.6) * 0.14);
-      halo.scale.setScalar(4.4 + Math.sin(time * 1.6) * 0.3 + boost * 1.2);
+      halo.scale.setScalar(4.4 + Math.sin(time * 1.6) * 0.3 + boost * 0.8);
 
       rings.forEach((ring, i) => {
         ring.rotation.z += ring.userData.speed * dt * motion;
@@ -425,13 +425,13 @@ export default function Scene({ activeIndex }: Props) {
       outer.mat.uniforms.uOpacity.value = cur.op;
       inner.mat.uniforms.uTime.value = time * 1.3;
       inner.mat.uniforms.uOpacity.value = cur.op;
-      meshMat.opacity = 0.13 * cur.op;
-      coreMat.opacity = 0.9 * cur.op;
-      haloMat.opacity = 0.5 * cur.op;
-      ringMats.forEach((m) => (m.opacity = 0.5 * cur.op));
-      (rings[0].userData.sat as THREE.Sprite).material.opacity = cur.op;
-      (rings[1].userData.sat as THREE.Sprite).material.opacity = cur.op;
-      shardMats.forEach((m, i) => (m.opacity = (i % 2 === 0 ? 0.5 : 0.05) * (0.55 + cur.op * 0.45)));
+      meshMat.opacity = 0.07 * cur.op;
+      coreMat.opacity = 0.55 * cur.op;
+      haloMat.opacity = 0.2 * cur.op;
+      ringMats.forEach((m) => (m.opacity = 0.28 * cur.op));
+      (rings[0].userData.sat as THREE.Sprite).material.opacity = cur.op * 0.6;
+      (rings[1].userData.sat as THREE.Sprite).material.opacity = cur.op * 0.6;
+      shardMats.forEach((m, i) => (m.opacity = (i % 2 === 0 ? 0.3 : 0.03) * (0.55 + cur.op * 0.45)));
 
       // shards: tumble + bob + parallax by depth (near ones move more)
       shards.forEach((sh) => {
@@ -453,7 +453,7 @@ export default function Scene({ activeIndex }: Props) {
         const wrapped = ((((y + 7) % 14) + 14) % 14) - 7;
         gl.mesh.position.set(gl.base.x - mouse.x * 1.1 * par + Math.sin(time * 0.4 + gl.phase) * 0.3, wrapped - mouse.y * 0.7 * par, gl.base.z);
         const edge = 1 - Math.min(1, Math.abs(wrapped) / 7);
-        glyphMats[i].opacity = 0.42 * edge * (0.5 + cur.op * 0.5);
+        glyphMats[i].opacity = 0.24 * edge * (0.5 + cur.op * 0.5);
       });
 
       // dust parallax
@@ -476,5 +476,5 @@ export default function Scene({ activeIndex }: Props) {
     };
   }, []);
 
-  return <div ref={mountRef} aria-hidden="true" className="pointer-events-none fixed inset-0 z-0" />;
+  return <div ref={mountRef} aria-hidden="true" className="pointer-events-none fixed inset-0 z-0 opacity-[0.72]" />;
 }

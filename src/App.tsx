@@ -532,7 +532,7 @@ export default function App() {
                     src="/photos/tojo-cutout.webp"
                     alt="Tojo Tom Kattakayam"
                     className="mx-auto h-[76dvh] max-h-[44rem] w-auto max-w-full object-contain"
-                    style={{ filter: "drop-shadow(0 0 45px rgba(90,150,255,0.35))" }}
+                    style={{ filter: "drop-shadow(0 0 45px rgba(90,150,255,0.18))" }}
                   />
                 </div>
               </Tilt>
