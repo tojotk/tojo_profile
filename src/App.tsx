@@ -1321,7 +1321,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import Scene from "./components/Scene";
 import { Icon, Reveal, SectionHeader, Tilt } from "./components/ui";
 
-const NAV_LINKS = ["About", "Services", "Skills", "Projects", "Experience", "Profile", "Contact"] as const;
+const NAV_LINKS = ["Home", "Services", "Skills", "Projects", "Experience", "Profile", "Contact"] as const;
 
 const MARQUEE = [
   "Python",
@@ -1713,7 +1713,7 @@ export default function App() {
   useEffect(() => {
     const updateScale = () => {
       const width = window.innerWidth;
-      setCanvasScale(Math.min(1, Math.max(0.32, width / 1280)));
+      setCanvasScale(Math.min(1, width / 1280));
     };
     updateScale();
     window.addEventListener("resize", updateScale, { passive: true });
@@ -1749,35 +1749,35 @@ export default function App() {
     <div className="relative min-h-screen overflow-x-hidden font-sans text-gray-200">
       <Scene activeIndex={active} />
 
-      {/* ================= Navbar ================= */}
-      <header className="fixed inset-x-0 top-3 z-[100] flex justify-center px-4">
-        <nav
-          className={`glass flex w-fit items-center justify-center rounded-full px-5 py-2.5 transition-all duration-300 ${
-            scrolled ? "shadow-2xl shadow-black/50" : ""
-          }`}
-          aria-label="Primary"
-        >
-          <ul className="flex items-center justify-center gap-1">
-            {NAV_LINKS.map((link, i) => (
-              <li key={link}>
-                <button
-                  onClick={() => go(link)}
-                  className={`rounded-full px-5 py-2.5 text-base font-medium transition-colors ${
-                    active === i ? "bg-white/10 text-white" : "text-gray-400 hover:text-white"
-                  }`}
-                >
-                  {link}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      </header>
-
       <div
-        className="portfolio-canvas mx-auto"
+        className="portfolio-canvas mx-auto relative"
         style={{ width: "1280px", zoom: canvasScale }}
       >
+        {/* ================= Navbar ================= */}
+        <header className="sticky top-3 z-[100] flex justify-center px-4">
+          <nav
+            className={`glass flex w-fit items-center justify-center rounded-full px-5 py-2.5 transition-all duration-300 ${
+              scrolled ? "shadow-2xl shadow-black/50" : ""
+            }`}
+            aria-label="Primary"
+          >
+            <ul className="flex items-center justify-center gap-1">
+              {NAV_LINKS.map((link, i) => (
+                <li key={link}>
+                  <button
+                    onClick={() => go(link)}
+                    className={`rounded-full px-5 py-2.5 text-base font-medium transition-colors ${
+                      active === i ? "bg-white/10 text-white" : "text-gray-400 hover:text-white"
+                    }`}
+                  >
+                    {link}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </header>
+
       <main className="relative z-10">
         {/* ================= Hero / About ================= */}
         <section id="about" className="relative min-h-[100dvh] overflow-hidden px-10 pt-24">
@@ -1813,7 +1813,7 @@ export default function App() {
                 </span>
               </Reveal>
               <Reveal delay={80}>
-                <p className="font-display text-lg font-medium text-gray-300 md:text-xl">Hello! I'm</p>
+                <p className="font-display text-lg font-medium text-gray-300 text-xl">Hello! I'm</p>
                 <h1 className="font-display mt-1 text-5xl font-bold uppercase leading-[1.02] tracking-tight text-white">
                   Tojo Tom
                   <br />
@@ -1839,7 +1839,7 @@ export default function App() {
             {/* right: role */}
             <div className="space-y-6 text-left">
               <Reveal delay={200}>
-                <p className="font-display text-lg font-medium text-gray-300 md:text-xl">Full-Stack  &amp;</p>
+                <p className="font-display text-lg font-medium text-gray-300 text-xl">Full-Stack  &amp;</p>
                 <p className="font-display mt-1 text-5xl font-bold uppercase leading-[1.02] tracking-tight">
                   <span className="whitespace-nowrap bg-gradient-to-r from-cyan-300 to-sky-400 bg-clip-text text-transparent">AI / Machine Learning </span>
                   <br />
@@ -1894,7 +1894,7 @@ export default function App() {
           <Reveal key={service.title} delay={i * 80}>
             <Tilt max={6} className="h-full">
 
-              <div className="group glass relative flex h-full min-h-[360px] flex-col overflow-hidden rounded-3xl p-7 md:p-8">
+              <div className="group glass relative flex h-full min-h-[360px] flex-col overflow-hidden rounded-3xl p-7 p-8">
 
                 {/* Ambient Glow */}
                 <div className="pointer-events-none absolute -right-20 -top-20 h-40 w-40 rounded-full bg-cyan-400/10 blur-3xl transition-all duration-500 group-hover:bg-cyan-400/20" />
@@ -1914,7 +1914,7 @@ export default function App() {
 
                 {/* Title */}
                 <div className="relative mt-7">
-                  <h3 className="font-display text-xl font-bold text-white md:text-2xl">
+                  <h3 className="font-display text-xl font-bold text-white text-2xl">
                     {service.title}
                   </h3>
 
@@ -1956,16 +1956,16 @@ export default function App() {
 
     {/* Workflow */}
     <Reveal delay={120} className="mt-10">
-      <div className="glass overflow-hidden rounded-3xl p-6 md:p-8">
+      <div className="glass overflow-hidden rounded-3xl p-6 p-8">
 
-        <div className="mb-7 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+        <div className="mb-7 flex flex-col gap-2 flex-row items-end justify-between">
 
           <div>
             <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-cyan-300/70">
               My workflow
             </p>
 
-            <h3 className="font-display mt-2 text-xl font-bold text-white md:text-2xl">
+            <h3 className="font-display mt-2 text-xl font-bold text-white text-2xl">
               From idea to intelligent product
             </h3>
           </div>
@@ -2010,7 +2010,7 @@ export default function App() {
 
                 {i < PIPELINE.length - 1 && (
                   <Icon.ArrowUpRight
-                    className="absolute -right-3 top-1/2 hidden h-4 w-4 -translate-y-1/2 rotate-45 text-gray-700 lg:block"
+                    className="absolute -right-3 top-1/2 hidden h-4 w-4 -translate-y-1/2 rotate-45 text-gray-700 block"
                   />
                 )}
 
@@ -2083,10 +2083,10 @@ export default function App() {
           delay={(i % 3) * 80}
           className={
             project.featured
-              ? "lg:col-span-7"
+              ? "col-span-7"
               : i === 1
-                ? "lg:col-span-5"
-                : "lg:col-span-4"
+                ? "col-span-5"
+                : "col-span-4"
           }
         >
           <Tilt max={6} className="h-full">
@@ -2095,7 +2095,7 @@ export default function App() {
               href={project.href}
               target="_blank"
               rel="noopener noreferrer"
-              className={`project-card glass group relative flex h-full min-h-[430px] flex-col overflow-hidden rounded-3xl p-7 md:p-8 ${
+              className={`project-card glass group relative flex h-full min-h-[430px] flex-col overflow-hidden rounded-3xl p-7 p-8 ${
                 project.featured ? "project-featured" : ""
               }`}
             >
@@ -2121,7 +2121,7 @@ export default function App() {
                   </p>
                 </div>
 
-                <h3 className="font-display mt-4 max-w-xl text-2xl font-bold tracking-tight text-white transition-colors duration-300 group-hover:text-cyan-50 md:text-3xl">
+                <h3 className="font-display mt-4 max-w-xl text-2xl font-bold tracking-tight text-white transition-colors duration-300 group-hover:text-cyan-50 text-3xl">
                   {project.title}
                 </h3>
 
@@ -2211,7 +2211,7 @@ export default function App() {
 
     <Reveal delay={180}>
 
-      <div className="glass relative overflow-hidden rounded-3xl p-7 md:p-9">
+      <div className="glass relative overflow-hidden rounded-3xl p-7 p-9">
 
         {/* Ambient Glow */}
         <div className="pointer-events-none absolute -right-20 -top-20 h-48 w-48 rounded-full bg-cyan-400/10 blur-3xl" />
@@ -2265,10 +2265,10 @@ export default function App() {
               intro="A practical foundation in Python development, AI/ML and team leadership."
             />
             <div className="mt-14 grid grid-cols-5 gap-6">
-              <div className="space-y-5 lg:col-span-3">
+              <div className="space-y-5 col-span-3">
                 {EXPERIENCE.map((item, i) => (
                   <Reveal key={item.role} delay={i * 90}>
-                    <Tilt max={4} className="glass rounded-3xl p-7 md:p-8">
+                    <Tilt max={4} className="glass rounded-3xl p-7 p-8">
                       <div className="flex flex-row items-start justify-between gap-5">
                         <div>
                           <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-cyan-300/80">{item.period}</p>
@@ -2284,8 +2284,8 @@ export default function App() {
                   </Reveal>
                 ))}
               </div>
-              <Reveal delay={100} className="lg:col-span-2">
-                <Tilt max={4} className="glass h-full rounded-3xl p-7 md:p-8">
+              <Reveal delay={100} className="col-span-2">
+                <Tilt max={4} className="glass h-full rounded-3xl p-7 p-8">
                   <div className="flex items-center gap-3">
                     <span className="grid h-11 w-11 place-items-center rounded-xl bg-violet-500/15 text-violet-300 ring-1 ring-white/10">
                       <Icon.Cap className="h-5 w-5" />
@@ -2315,7 +2315,7 @@ export default function App() {
                           <p className="mt-1 text-sm text-violet-300">ICT Academy of Kerala</p>
                         </div>
 
-                        <span className="hidden h-10 w-10 shrink-0 place-items-center rounded-xl bg-cyan-400/10 text-cyan-300 ring-1 ring-cyan-400/20 sm:grid">
+                        <span className="hidden h-10 w-10 shrink-0 place-items-center rounded-xl bg-cyan-400/10 text-cyan-300 ring-1 ring-cyan-400/20 grid">
                           <Icon.Cap className="h-5 w-5" />
                         </span>
                       </div>
@@ -2354,7 +2354,7 @@ export default function App() {
           <div className="mx-auto max-w-6xl">
             <SectionHeader num="05" eyebrow="Get to know me" title="Profile" />
             <div className="mt-14 grid grid-cols-5 gap-6">
-              <Reveal className="md:col-span-3">
+              <Reveal className="col-span-3">
                 <Tilt max={4} className="glass h-full rounded-3xl p-8">
                   <div className="flex items-center gap-4 border-b border-white/10 pb-6">
                     <div className="h-16 w-16 overflow-hidden rounded-2xl border border-violet-400/60 shadow-lg shadow-violet-900/40">
@@ -2381,7 +2381,7 @@ export default function App() {
                 </Tilt>
               </Reveal>
 
-              <div className="space-y-4 md:col-span-2">
+              <div className="space-y-4 col-span-2">
                 <Social
                   delay={0}
                   icon={<Icon.Github />}
@@ -2420,7 +2420,7 @@ export default function App() {
             <div className="text-center">
               <SectionCentered eyebrow="06 · Let's connect" title="Get In Touch" />
               <Reveal delay={100}>
-                <p className="mx-auto mt-6 max-w-2xl text-gray-400 md:text-lg">
+                <p className="mx-auto mt-6 max-w-2xl text-gray-400 text-lg">
                   Interested in collaborating on an AI/ML project or building a Python / Django web application? Feel free to reach
                   out through any of the options below.
                 </p>
@@ -2459,7 +2459,7 @@ export default function App() {
               />
             </div>
 
-            <footer className="mt-24 flex flex-row items-center justify-between gap-3 border-t border-white/10 pt-8 text-sm text-gray-500 sm:flex-row">
+            <footer className="mt-24 flex flex-row items-center justify-between gap-3 border-t border-white/10 pt-8 text-sm text-gray-500 flex-row">
               <p>© {new Date().getFullYear()} Tojo Tom Kattakayam</p>
               <p>AI &amp; ML · Full-Stack Python · Kozhikode, India</p>
             </footer>
