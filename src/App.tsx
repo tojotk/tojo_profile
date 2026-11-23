@@ -2,7 +2,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import Scene from "./components/Scene";
 import { Icon, Reveal, SectionHeader, Tilt } from "./components/ui";
 
-const NAV_LINKS = ["About", "Services", "Skills", "Projects", "Experience", "Profile", "Contact"] as const;
+const NAV_LINKS = ["About", "Services", "Skills", "Projects", "Experience", "Profile", "Contact", "" , "" , "" , ""] as const;
 
 const MARQUEE = [
   "Python",
@@ -1089,7 +1089,7 @@ export default function App() {
         {/* ================= Profile ================= */}
         <section id="profile" className="px-6 py-28 md:px-10">
           <div className="mx-auto max-w-6xl">
-            <SectionHeader num="06" eyebrow="Get to know me" title="Profile" />
+            <SectionHeader num="05" eyebrow="Get to know me" title="Profile" />
             <div className="mt-14 grid gap-6 md:grid-cols-5">
               <Reveal className="md:col-span-3">
                 <Tilt max={4} className="glass h-full rounded-3xl p-8">
@@ -1155,7 +1155,7 @@ export default function App() {
         <section id="contact" className="px-6 pb-16 pt-28 md:px-10">
           <div className="mx-auto max-w-5xl">
             <div className="text-center">
-              <SectionCentered eyebrow="07 · Let's connect" title="Get In Touch" />
+              <SectionCentered eyebrow="06 · Let's connect" title="Get In Touch" />
               <Reveal delay={100}>
                 <p className="mx-auto mt-6 max-w-2xl text-gray-400 md:text-lg">
                   Interested in collaborating on an AI/ML project or building a Python / Django web application? Feel free to reach
