@@ -83,10 +83,14 @@ export function Tilt({
 }
 
 /* ---------------- Section header ---------------- */
-export function SectionHeader({ eyebrow, title, intro }: { eyebrow: string; title: string; intro?: string }) {
+export function SectionHeader({ eyebrow, title, intro, num }: { eyebrow: string; title: string; intro?: string; num?: string }) {
   return (
     <Reveal className="max-w-2xl">
-      <p className="eyebrow">{eyebrow}</p>
+      <p className="eyebrow flex items-center gap-3">
+        {num && <span className="font-mono text-[11px] text-cyan-300/80">{num}</span>}
+        {num && <span className="h-px w-8 bg-white/20" />}
+        {eyebrow}
+      </p>
       <h2 className="font-display mt-3 text-4xl font-bold tracking-tight text-white md:text-5xl">{title}</h2>
       <div className="mt-5 h-[3px] w-14 rounded-full bg-gradient-to-r from-violet-500 to-cyan-400" />
       {intro && <p className="mt-6 text-base leading-relaxed text-gray-400 md:text-lg">{intro}</p>}
@@ -237,6 +241,20 @@ export const Icon = {
   Close: ({ className }: IconProps) => (
     <svg {...base} className={className}>
       <path d="M18 6 6 18M6 6l12 12" />
+    </svg>
+  ),
+  Layers: ({ className }: IconProps) => (
+    <svg {...base} className={className}>
+      <path d="m12 2 10 5-10 5L2 7l10-5z" />
+      <path d="m2 17 10 5 10-5" />
+      <path d="m2 12 10 5 10-5" />
+    </svg>
+  ),
+  Database: ({ className }: IconProps) => (
+    <svg {...base} className={className}>
+      <ellipse cx="12" cy="5" rx="9" ry="3" />
+      <path d="M3 5v14a9 3 0 0 0 18 0V5" />
+      <path d="M3 12a9 3 0 0 0 18 0" />
     </svg>
   ),
 };
