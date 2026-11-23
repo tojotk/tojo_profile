@@ -1705,6 +1705,7 @@ const EXPERIENCE = [
 export default function App() {
   const [active, setActive] = useState(0);
   const [scrolled, setScrolled] = useState(false);
+  const DESIGN_WIDTH = 1280;
   const [canvasScale, setCanvasScale] = useState(1);
 
   // Keep one consistent desktop composition across laptop and phone.
@@ -1713,7 +1714,7 @@ export default function App() {
   useEffect(() => {
     const updateScale = () => {
       const width = window.innerWidth;
-      setCanvasScale(Math.min(1, width / 1280));
+      setCanvasScale(Math.min(1, width / DESIGN_WIDTH));
     };
     updateScale();
     window.addEventListener("resize", updateScale, { passive: true });
@@ -1746,12 +1747,16 @@ export default function App() {
   };
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden font-sans text-gray-200">
+    <div className="relative min-h-screen w-full overflow-x-hidden font-sans text-gray-200">
       <Scene activeIndex={active} />
 
       <div
-        className="portfolio-canvas mx-auto relative"
-        style={{ width: "1280px", zoom: canvasScale }}
+        className="portfolio-canvas relative mx-auto"
+        style={{
+          width: `${DESIGN_WIDTH}px`,
+          zoom: canvasScale,
+          transformOrigin: "top center",
+        }}
       >
         {/* ================= Navbar ================= */}
         <header className="sticky top-3 z-[100] flex justify-center px-4">
