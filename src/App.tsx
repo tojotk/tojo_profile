@@ -1750,13 +1750,9 @@ export default function App() {
       <Scene activeIndex={active} />
 
       {/* ================= Navbar ================= */}
-      {/* The navbar lives outside the scaled portfolio canvas so it stays visible on phones. */}
-      <header
-        className="fixed left-1/2 top-3 z-[100] w-[1120px] -translate-x-1/2"
-        style={{ transform: `translateX(-50%) scale(${canvasScale})`, transformOrigin: "top center" }}
-      >
+      <header className="fixed inset-x-0 top-3 z-[100] flex justify-center px-4">
         <nav
-          className={`glass flex w-full items-center justify-center rounded-full px-5 py-2.5 transition-all duration-300 ${
+          className={`glass flex w-fit items-center justify-center rounded-full px-5 py-2.5 transition-all duration-300 ${
             scrolled ? "shadow-2xl shadow-black/50" : ""
           }`}
           aria-label="Primary"
