@@ -1321,7 +1321,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import Scene from "./components/Scene";
 import { Icon, Reveal, SectionHeader, Tilt } from "./components/ui";
 
-const NAV_LINKS = ["Home", "Services", "Skills", "Projects", "Experience", "Profile", "Contact"] as const;
+const NAV_LINKS = ["About", "Services", "Skills", "Projects", "Experience", "Profile", "Contact"] as const;
 
 const MARQUEE = [
   "Python",
@@ -1772,7 +1772,7 @@ export default function App() {
               <li key={link}>
                 <button
                   onClick={() => go(link)}
-                  className={`rounded-full px-5 py-2.5 text-base font-medium transition-colors ${
+                  className={`font-display rounded-full px-5 py-2.5 text-[11px] font-semibold uppercase tracking-[0.18em] transition-colors ${
                     active === i ? "bg-white/10 text-white" : "text-gray-400 hover:text-white"
                   }`}
                 >
