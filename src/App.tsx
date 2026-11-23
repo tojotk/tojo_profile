@@ -265,7 +265,7 @@ export default function App() {
             {/* right: role */}
             <div className="space-y-6 pb-16 text-center md:pb-0 md:text-left">
               <Reveal delay={200}>
-                <p className="font-display text-lg font-medium text-gray-300 md:text-xl">AI &amp; ML Developer &amp;</p>
+                <p className="font-display text-lg font-medium text-gray-300 md:text-xl">AI &amp; ML Developer</p>
                 <p className="font-display mt-1 text-4xl font-bold uppercase leading-[1.02] tracking-tight sm:text-5xl lg:text-5xl">
                   <span className="whitespace-nowrap bg-gradient-to-r from-cyan-300 to-sky-400 bg-clip-text text-transparent">Full-Stack</span>
                   <br />
