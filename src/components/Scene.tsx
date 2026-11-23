@@ -260,43 +260,6 @@ export default function Scene({ activeIndex }: Props) {
     scene.add(dust);
     disposables.push(dustGeo, dustMat);
 
-    /* ---------- floating crystal shards (depth layers) ---------- */
-    const shardGeos = [new THREE.OctahedronGeometry(1, 0), new THREE.TetrahedronGeometry(1, 0), new THREE.IcosahedronGeometry(1, 0)];
-    const shardGroup = new THREE.Group();
-    scene.add(shardGroup);
-    type Floater = { mesh: THREE.Object3D; spin: THREE.Vector3; base: THREE.Vector3; depth: number; phase: number };
-    const shards: Floater[] = [];
-    const shardMats: THREE.Material[] = [];
-    const SHARDS = 16;
-    for (let i = 0; i < SHARDS; i++) {
-      const geo = shardGeos[i % shardGeos.length];
-      const col = i % 3 === 0 ? ACCENT_B : ACCENT_A;
-      const g = new THREE.Group();
-      const wire = new THREE.LineSegments(
-        new THREE.EdgesGeometry(geo),
-        new THREE.LineBasicMaterial({ color: col, transparent: true, opacity: 0.55, blending: THREE.AdditiveBlending, depthWrite: false })
-      );
-      const face = new THREE.Mesh(
-        geo,
-        new THREE.MeshBasicMaterial({ color: col, transparent: true, opacity: 0.05, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide })
-      );
-      g.add(wire, face);
-      g.scale.setScalar(0.12 + Math.random() * 0.34);
-      const depth = -Math.random() * 9 - 0.5;
-      const base = new THREE.Vector3((Math.random() - 0.5) * 22, (Math.random() - 0.5) * 12, depth);
-      g.position.copy(base);
-      shardGroup.add(g);
-      shards.push({
-        mesh: g,
-        spin: new THREE.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).multiplyScalar(0.7),
-        base,
-        depth,
-        phase: Math.random() * Math.PI * 2,
-      });
-      shardMats.push(wire.material as THREE.Material, face.material as THREE.Material);
-      disposables.push(wire.geometry, wire.material, face.material);
-    }
-    shardGeos.forEach((g) => disposables.push(g));
 
     /* ---------- floating code glyphs ---------- */
     const GLYPHS = ["</>", "{ }", "λ", "0101", "∑", "AI", "[ ]", "=>", "py", "∇", "01", "#!"];
@@ -431,21 +394,6 @@ export default function Scene({ activeIndex }: Props) {
       ringMats.forEach((m) => (m.opacity = 0.28 * cur.op));
       (rings[0].userData.sat as THREE.Sprite).material.opacity = cur.op * 0.6;
       (rings[1].userData.sat as THREE.Sprite).material.opacity = cur.op * 0.6;
-      shardMats.forEach((m, i) => (m.opacity = (i % 2 === 0 ? 0.3 : 0.03) * (0.55 + cur.op * 0.45)));
-
-      // shards: tumble + bob + parallax by depth (near ones move more)
-      shards.forEach((sh) => {
-        const par = 1 / (1 - sh.depth * 0.18);
-        sh.mesh.rotation.x += sh.spin.x * dt * motion;
-        sh.mesh.rotation.y += sh.spin.y * dt * motion;
-        sh.mesh.rotation.z += sh.spin.z * dt * motion;
-        sh.mesh.position.set(
-          sh.base.x - mouse.x * 1.4 * par,
-          sh.base.y + Math.sin(time * 0.5 + sh.phase) * 0.35 + scrollY * 0.0012 * par * 3 - mouse.y * 0.9 * par,
-          sh.base.z
-        );
-      });
-
       // code glyphs drift upward and wrap, fading near the edges
       glyphs.forEach((gl, i) => {
         const par = 1 / (1 - gl.depth * 0.18);
