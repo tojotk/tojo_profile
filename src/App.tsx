@@ -206,9 +206,29 @@ export default function App() {
 
       <main className="relative z-10">
         {/* ================= Hero / About ================= */}
-        <section id="about" className="relative flex min-h-[100dvh] items-center px-6 pb-24 pt-28 md:px-10">
-          <div className="mx-auto grid w-full max-w-7xl items-center gap-14 md:grid-cols-2">
-            <div className="space-y-7">
+        <section id="about" className="relative min-h-[100dvh] overflow-hidden px-6 pt-24 md:px-10">
+          <div className="hero-glow" aria-hidden="true" />
+
+          {/* social rail */}
+          <div className="absolute bottom-1/3 left-6 z-20 hidden flex-col items-center gap-5 text-gray-400 md:flex">
+            <span className="h-16 w-px bg-gradient-to-b from-transparent to-white/30" />
+            <a href="https://github.com/tojotk" target="_blank" rel="noopener noreferrer" aria-label="GitHub" className="transition-colors hover:text-white">
+              <Icon.Github className="h-5 w-5" />
+            </a>
+            <a href="https://www.linkedin.com/in/tojo-tom-kattakayam/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="transition-colors hover:text-white">
+              <Icon.Linkedin className="h-5 w-5" />
+            </a>
+            <a href="mailto:tojotom05@gmail.com" aria-label="Email" className="transition-colors hover:text-white">
+              <Icon.Mail className="h-5 w-5" />
+            </a>
+            <a href="https://wa.me/918921981997" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="transition-colors hover:text-white">
+              <Icon.Message className="h-5 w-5" />
+            </a>
+          </div>
+
+          <div className="relative z-10 mx-auto grid min-h-[calc(100dvh-6rem)] w-full max-w-7xl items-center gap-4 md:grid-cols-[1fr_minmax(0,28rem)_1fr] md:gap-6">
+            {/* left: name */}
+            <div className="space-y-5 pt-6 text-center md:pt-0 md:text-left md:pl-10">
               <Reveal>
                 <span className="glass inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-medium text-emerald-300">
                   <span className="relative flex h-2 w-2">
@@ -219,25 +239,45 @@ export default function App() {
                 </span>
               </Reveal>
               <Reveal delay={80}>
-                <p className="eyebrow">Hello, I'm</p>
-                <h1 className="font-display mt-3 text-5xl font-bold leading-[1.05] tracking-tight md:text-7xl">
-                  <span className="text-gradient">Tojo Tom</span>
+                <p className="font-display text-lg font-medium text-gray-300 md:text-xl">Hello! I'm</p>
+                <h1 className="font-display mt-1 text-4xl font-bold uppercase leading-[1.02] tracking-tight text-white sm:text-5xl lg:text-5xl">
+                  Tojo Tom
                   <br />
-                  <span className="text-white">Kattakayam</span>
+                  <span className="text-gradient">Kattakayam</span>
                 </h1>
               </Reveal>
-              <Reveal delay={160}>
-                <p className="font-display text-xl font-medium text-gray-200 md:text-2xl">
-                  AI &amp; ML Developer <span className="mx-2 text-violet-400">/</span> Full-Stack Python
+            </div>
+
+            {/* center: figure */}
+            <Reveal delay={150} className="order-first self-end md:order-none">
+              <Tilt max={4} glare={false} className="mx-auto">
+                <div className="hero-figure relative mx-auto">
+                  <img
+                    src="/photos/tojo-cutout.webp"
+                    alt="Tojo Tom Kattakayam"
+                    className="mx-auto h-[52dvh] max-h-[44rem] w-auto max-w-full object-contain md:h-[76dvh]"
+                    style={{ filter: "drop-shadow(0 0 45px rgba(34,211,238,0.22))" }}
+                  />
+                </div>
+              </Tilt>
+            </Reveal>
+
+            {/* right: role */}
+            <div className="space-y-6 pb-16 text-center md:pb-0 md:text-left">
+              <Reveal delay={200}>
+                <p className="font-display text-lg font-medium text-gray-300 md:text-xl">AI &amp; ML Developer &amp;</p>
+                <p className="font-display mt-1 text-4xl font-bold uppercase leading-[1.02] tracking-tight sm:text-5xl lg:text-5xl">
+                  <span className="whitespace-nowrap bg-gradient-to-r from-cyan-300 to-sky-400 bg-clip-text text-transparent">Full-Stack</span>
+                  <br />
+                  <span className="text-white">Python</span>
                 </p>
               </Reveal>
-              <Reveal delay={240}>
-                <p className="max-w-lg text-base leading-relaxed text-gray-400 md:text-lg">
-                  I build intelligent systems and the web applications around them — predictive models, data pipelines and full-stack
-                  Python products with Django, taking ideas from raw data all the way to a working interface.
+              <Reveal delay={280}>
+                <p className="mx-auto max-w-sm text-sm leading-relaxed text-gray-400 md:mx-0 md:text-base">
+                  Building intelligent systems and the Django web applications around them — from raw data to a working interface.
                 </p>
               </Reveal>
-              <Reveal delay={320} className="flex flex-wrap gap-4 pt-2">
+              <Reveal delay={340} className="flex flex-wrap justify-center gap-3 md:justify-start">
                 <button onClick={() => go("projects")} className="btn btn-primary">
                   View my work <Icon.ArrowDown className="h-4 w-4" />
                 </button>
@@ -246,64 +286,7 @@ export default function App() {
                 </button>
               </Reveal>
             </div>
-
-            {/* 3D portrait + code window */}
-            <Reveal delay={200} className="flex justify-center md:justify-end">
-              <Tilt max={10} className="relative">
-                <div className="relative h-[22rem] w-[17rem] sm:h-[26rem] sm:w-[20rem] md:h-[30rem] md:w-[23rem]">
-                  <div className="portrait-ring" />
-                  <div className="absolute inset-0 overflow-hidden rounded-[1.65rem] bg-ink shadow-2xl shadow-violet-900/50">
-                    <img src="/photos/IMG_1.jpeg" alt="Tojo Tom Kattakayam" className="h-full w-full object-cover object-[50%_25%]" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-transparent to-transparent" />
-                  </div>
-
-                  <div className="absolute -left-6 top-12 hidden sm:block" style={{ transform: "translateZ(70px)" }}>
-                    <div className="glass float flex items-center gap-2 rounded-2xl px-4 py-2.5 text-sm font-medium text-white shadow-xl">
-                      <Icon.Cpu className="h-4 w-4 text-cyan-300" /> Machine Learning
-                    </div>
-                  </div>
-                  <div className="absolute -right-5 top-[52%] hidden sm:block" style={{ transform: "translateZ(90px)" }}>
-                    <div className="glass float flex items-center gap-2 rounded-2xl px-4 py-2.5 text-sm font-medium text-white shadow-xl [animation-delay:-2s]">
-                      <Icon.Code className="h-4 w-4 text-emerald-300" /> Django
-                    </div>
-                  </div>
-
-                  <div className="absolute -bottom-8 -left-16 hidden w-[17.5rem] lg:block" style={{ transform: "translateZ(100px)" }}>
-                    <div className="glass float code-window overflow-hidden rounded-2xl shadow-2xl [animation-delay:-3.5s]">
-                      <div className="flex items-center gap-1.5 border-b border-white/10 px-4 py-2.5">
-                        <span className="h-2.5 w-2.5 rounded-full bg-rose-400/80" />
-                        <span className="h-2.5 w-2.5 rounded-full bg-amber-300/80" />
-                        <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/80" />
-                        <span className="ml-2 text-[10px] text-gray-500">train.py</span>
-                      </div>
-                      <pre className="overflow-hidden px-4 py-3 text-gray-300">
-                        <code>
-                          <span className="text-violet-300">model</span> = <span className="text-cyan-300">RandomForest</span>()
-                          {"\n"}
-                          <span className="text-violet-300">model</span>.<span className="text-amber-200">fit</span>(X_train, y_train)
-                          {"\n"}
-                          <span className="text-gray-500"># accuracy</span>
-                          {"\n"}
-                          <span className="text-emerald-300">print</span>(model.<span className="text-amber-200">score</span>(X_test, y_test))
-                        </code>
-                      </pre>
-                    </div>
-                  </div>
-                </div>
-              </Tilt>
-            </Reveal>
           </div>
-
-          <button
-            onClick={() => go("services")}
-            aria-label="Scroll down"
-            className="absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-gray-500 hover:text-gray-300 md:flex"
-          >
-            Scroll
-            <span className="relative block h-9 w-[22px] rounded-full border border-white/25">
-              <span className="scroll-cue absolute left-1/2 top-2 h-1.5 w-1 -translate-x-1/2 rounded-full bg-white/70" />
-            </span>
-          </button>
         </section>
 
         {/* ================= Tech marquee ================= */}
