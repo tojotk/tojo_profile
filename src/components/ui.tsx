@@ -156,11 +156,23 @@ export function CursorFX() {
       dot.current?.style.setProperty("--dx", `${d.x.toFixed(1)}px`);
       dot.current?.style.setProperty("--dy", `${d.y.toFixed(1)}px`);
     };
+    const onDown = (e: globalThis.PointerEvent) => {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      const burst = document.createElement("div");
+      burst.className = "click-burst";
+      burst.style.left = `${e.clientX}px`;
+      burst.style.top = `${e.clientY}px`;
+      burst.innerHTML = '<b class="ring"></b>' + Array.from({ length: 10 }, (_, i) => `<i style="--a:${i * 36}deg;--d:${28 + Math.random() * 34}px"></i>`).join("");
+      document.body.appendChild(burst);
+      setTimeout(() => burst.remove(), 800);
+    };
     window.addEventListener("pointermove", onMove, { passive: true });
+    window.addEventListener("pointerdown", onDown, { passive: true });
     loop();
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerdown", onDown);
     };
   }, []);
   return (
@@ -194,7 +206,7 @@ export function Loader({ onDone }: { onDone?: () => void }) {
       <div className="text-center" style={{ perspective: "600px" }}>
         <div className="loader-mark mx-auto" />
         <div className="loader-bar" />
-        <p className="font-display mt-5 text-[11px] uppercase tracking-[0.5em] text-gold-300/80">Tojo Tom</p>
+        <p className="font-display mt-5 text-[11px] uppercase tracking-[0.5em] text-azure-300/80">Tojo Tom</p>
       </div>
     </div>
   );
@@ -253,17 +265,69 @@ export function GhostNum({ children, className = "" }: { children: ReactNode; cl
   );
 }
 
+/* ---------------- Text decode / scramble on reveal ---------------- */
+const SCR = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789<>/{}[]*#";
+export function Scramble({ text }: { text: string }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const [out, setOut] = useState(text);
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const el = ref.current;
+    if (!el) return;
+    let timer = 0;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        io.disconnect();
+        const t0 = performance.now();
+        const DUR = 900;
+        const finish = window.setTimeout(() => {
+          clearInterval(timer);
+          setOut(text);
+        }, DUR + 150);
+        timer = window.setInterval(() => {
+          const reveal = ((performance.now() - t0) / DUR) * text.length;
+          if (reveal >= text.length) {
+            clearInterval(timer);
+            clearTimeout(finish);
+            setOut(text);
+            return;
+          }
+          setOut(
+            Array.from(text)
+              .map((c, i) => (c === " " || i < reveal ? c : SCR[Math.floor(Math.random() * SCR.length)]))
+              .join("")
+          );
+        }, 40);
+      },
+      { threshold: 0.4 }
+    );
+    io.observe(el);
+    return () => {
+      io.disconnect();
+      clearInterval(timer);
+    };
+  }, [text]);
+  return (
+    <span ref={ref} aria-label={text}>
+      <span aria-hidden="true">{out}</span>
+    </span>
+  );
+}
+
 /* ---------------- Section header ---------------- */
 export function SectionHeader({ eyebrow, title, intro, num }: { eyebrow: string; title: string; intro?: string; num?: string }) {
   return (
     <Reveal className="max-w-2xl">
       <p className="eyebrow flex items-center gap-3">
-        {num && <span className="font-mono text-[11px] text-ice-300/80">{num}</span>}
+        {num && <span className="font-mono text-[11px] text-frost-300/80">{num}</span>}
         {num && <span className="h-px w-8 bg-white/20" />}
         {eyebrow}
       </p>
-      <h2 className="font-display mt-3 text-4xl font-bold tracking-tight text-white md:text-5xl">{title}</h2>
-      <div className="bar-grow mt-5 h-[3px] w-14 rounded-full bg-gradient-to-r from-gold-500 to-ice-400" />
+      <h2 className="font-display mt-3 text-4xl font-bold tracking-tight text-white md:text-5xl">
+        <Scramble text={title} />
+      </h2>
+      <div className="bar-grow mt-5 h-[3px] w-14 rounded-full bg-gradient-to-r from-azure-500 to-frost-400" />
       {intro && <p className="mt-6 text-base leading-relaxed text-gray-400 md:text-lg">{intro}</p>}
     </Reveal>
   );

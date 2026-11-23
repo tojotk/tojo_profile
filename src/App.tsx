@@ -1,6 +1,7 @@
 import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
 import Scene from "./components/Scene";
-import { CursorFX, GhostNum, Icon, Loader, Magnetic, Reveal, ScrollProgress, SectionHeader, SplitText, Tilt } from "./components/ui";
+import HeroTerminal from "./components/HeroTerminal";
+import { CursorFX, GhostNum, Icon, Loader, Magnetic, Reveal, ScrollProgress, SectionHeader, Tilt } from "./components/ui";
 
 const NAV_LINKS = ["About", "Services", "Skills", "Projects", "Experience", "Profile", "Contact"] as const;
 
@@ -512,12 +513,7 @@ export default function App() {
                 </span>
               </Reveal>
               <Reveal delay={80}>
-                <p className="font-display text-lg font-medium text-gray-300 text-xl">Hello! I'm</p>
-                <h1 className="font-display mt-1 text-5xl font-bold uppercase leading-[1.02] tracking-tight text-white">
-                  <SplitText text="Tojo Tom" base={100} />
-                  <br />
-                  <SplitText text="Kattakayam" base={420} gradient />
-                </h1>
+                <HeroTerminal start={ready} />
               </Reveal>
             </div>
 
@@ -536,7 +532,7 @@ export default function App() {
                     src="/photos/tojo-cutout.webp"
                     alt="Tojo Tom Kattakayam"
                     className="mx-auto h-[76dvh] max-h-[44rem] w-auto max-w-full object-contain"
-                    style={{ filter: "drop-shadow(0 0 45px rgba(232,196,120,0.28))" }}
+                    style={{ filter: "drop-shadow(0 0 45px rgba(90,150,255,0.35))" }}
                   />
                 </div>
               </Tilt>
@@ -578,7 +574,15 @@ export default function App() {
           <div className="marquee-track">
             {[...MARQUEE, ...MARQUEE].map((t, i) => (
               <span key={i} className="flex items-center gap-3 whitespace-nowrap rounded-full border border-white/10 bg-white/[0.03] px-5 py-2 font-mono text-xs text-gray-300">
-                <span className="h-1.5 w-1.5 rounded-full bg-gradient-to-br from-gold-400 to-ice-300" />
+                <span className="h-1.5 w-1.5 rounded-full bg-gradient-to-br from-azure-400 to-frost-300" />
+                {t}
+              </span>
+            ))}
+          </div>
+          <div className="marquee-track marquee-rev mt-3">
+            {[...MARQUEE].reverse().concat([...MARQUEE].reverse()).map((t, i) => (
+              <span key={i} className="flex items-center gap-3 whitespace-nowrap rounded-full border border-white/10 bg-white/[0.03] px-5 py-2 font-mono text-xs text-gray-400">
+                <span className="h-1.5 w-1.5 rounded-full bg-gradient-to-br from-frost-300 to-azure-500" />
                 {t}
               </span>
             ))}
@@ -608,7 +612,7 @@ export default function App() {
               <div className="group glass relative flex h-full min-h-[360px] flex-col overflow-hidden rounded-3xl p-7 p-8">
 
                 {/* Ambient Glow */}
-                <div className="pointer-events-none absolute -right-20 -top-20 h-40 w-40 rounded-full bg-ice-400/10 blur-3xl transition-all duration-500 group-hover:bg-ice-400/20" />
+                <div className="pointer-events-none absolute -right-20 -top-20 h-40 w-40 rounded-full bg-frost-400/10 blur-3xl transition-all duration-500 group-hover:bg-frost-400/20" />
 
                 {/* Service Number */}
                 <div className="absolute right-7 top-7 font-mono text-[10px] tracking-[0.25em] text-gray-600">
@@ -617,7 +621,7 @@ export default function App() {
 
                 {/* Icon */}
                 <div
-                  className="relative grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br from-gold-500/20 to-ice-400/15 text-ice-300 ring-1 ring-white/10 transition-all duration-500 group-hover:scale-105 group-hover:ring-ice-300/30"
+                  className="relative grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br from-azure-500/20 to-frost-400/15 text-frost-300 ring-1 ring-white/10 transition-all duration-500 group-hover:scale-105 group-hover:ring-frost-300/30"
                   style={{ transform: "translateZ(35px)" }}
                 >
                   <S className="h-6 w-6" />
@@ -629,7 +633,7 @@ export default function App() {
                     {service.title}
                   </h3>
 
-                  <p className="mt-2 text-xs font-medium uppercase tracking-[0.12em] text-gold-300/80">
+                  <p className="mt-2 text-xs font-medium uppercase tracking-[0.12em] text-azure-300/80">
                     {service.subtitle}
                   </p>
                 </div>
@@ -655,7 +659,7 @@ export default function App() {
                 </div>
 
                 {/* Bottom Accent */}
-                <div className="absolute bottom-0 left-0 h-px w-0 bg-gradient-to-r from-gold-400 to-ice-300 transition-all duration-500 group-hover:w-full" />
+                <div className="absolute bottom-0 left-0 h-px w-0 bg-gradient-to-r from-azure-400 to-frost-300 transition-all duration-500 group-hover:w-full" />
 
               </div>
 
@@ -672,7 +676,7 @@ export default function App() {
         <div className="mb-7 flex flex-col gap-2 flex-row items-end justify-between">
 
           <div>
-            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-ice-300/70">
+            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-frost-300/70">
               My workflow
             </p>
 
@@ -696,12 +700,12 @@ export default function App() {
             return (
               <div
                 key={p.label}
-                className="group relative rounded-2xl border border-white/5 bg-white/[0.025] p-5 transition-all duration-300 hover:border-ice-400/20 hover:bg-white/[0.04]"
+                className="group relative rounded-2xl border border-white/5 bg-white/[0.025] p-5 transition-all duration-300 hover:border-frost-400/20 hover:bg-white/[0.04]"
               >
 
                 <div className="flex items-start justify-between">
 
-                  <span className="grid h-10 w-10 place-items-center rounded-xl bg-ice-400/10 text-ice-300 ring-1 ring-ice-400/10">
+                  <span className="grid h-10 w-10 place-items-center rounded-xl bg-frost-400/10 text-frost-300 ring-1 ring-frost-400/10">
                     <P className="h-5 w-5" />
                   </span>
 
@@ -753,7 +757,7 @@ export default function App() {
                   <Reveal key={group.category} delay={i * 70}>
                     <Tilt max={5} className="glass h-full rounded-3xl p-8">
                       <div className="mb-6 flex items-center gap-3">
-                        <span className="grid h-11 w-11 place-items-center rounded-xl bg-gradient-to-br from-gold-500/30 to-ice-400/20 text-gold-200 ring-1 ring-white/10">
+                        <span className="grid h-11 w-11 place-items-center rounded-xl bg-gradient-to-br from-azure-500/30 to-frost-400/20 text-azure-200 ring-1 ring-white/10">
                           <G className="h-5 w-5" />
                         </span>
                         <h3 className="font-display text-lg font-semibold text-white">{group.category}</h3>
@@ -762,7 +766,7 @@ export default function App() {
                         {group.items.map((skill) => (
                           <span
                             key={skill}
-                            className="cursor-default rounded-lg border border-white/10 bg-white/[0.04] px-3 py-1.5 text-sm text-gray-300 transition-colors hover:border-gold-400/50 hover:bg-gold-500/15 hover:text-white"
+                            className="cursor-default rounded-lg border border-white/10 bg-white/[0.04] px-3 py-1.5 text-sm text-gray-300 transition-colors hover:border-azure-400/50 hover:bg-azure-500/15 hover:text-white"
                           >
                             {skill}
                           </span>
@@ -814,7 +818,7 @@ export default function App() {
             >
 
               {/* Ambient Glow */}
-              <div className="pointer-events-none absolute -right-24 -top-24 h-56 w-56 rounded-full bg-ice-400/10 blur-3xl transition-all duration-700 group-hover:bg-ice-400/20" />
+              <div className="pointer-events-none absolute -right-24 -top-24 h-56 w-56 rounded-full bg-frost-400/10 blur-3xl transition-all duration-700 group-hover:bg-frost-400/20" />
 
               {/* Project Number */}
               <div className="absolute right-7 top-7 font-mono text-[10px] tracking-[0.25em] text-gray-600">
@@ -825,20 +829,20 @@ export default function App() {
               <div className="relative">
 
                 <div className="flex items-center gap-2">
-                  <span className="h-1.5 w-1.5 rounded-full bg-gradient-to-br from-gold-400 to-ice-300" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-gradient-to-br from-azure-400 to-frost-300" />
 
-                  <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-ice-300/80">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-frost-300/80">
                     {project.featured
                       ? "Featured project"
                       : "Selected project"}
                   </p>
                 </div>
 
-                <h3 className="font-display mt-4 max-w-xl text-2xl font-bold tracking-tight text-white transition-colors duration-300 group-hover:text-ice-50 text-3xl">
+                <h3 className="font-display mt-4 max-w-xl text-2xl font-bold tracking-tight text-white transition-colors duration-300 group-hover:text-frost-50 text-3xl">
                   {project.title}
                 </h3>
 
-                <p className="mt-2 text-sm font-medium text-gold-300">
+                <p className="mt-2 text-sm font-medium text-azure-300">
                   {project.subtitle}
                 </p>
 
@@ -859,9 +863,9 @@ export default function App() {
 
                 {/* Engineering Focus */}
                 {project.impact && (
-                  <div className="mt-6 rounded-2xl border border-white/[0.06] bg-white/[0.025] p-4 transition-all duration-300 group-hover:border-ice-400/10 group-hover:bg-white/[0.04]">
+                  <div className="mt-6 rounded-2xl border border-white/[0.06] bg-white/[0.025] p-4 transition-all duration-300 group-hover:border-frost-400/10 group-hover:bg-white/[0.04]">
 
-                    <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-ice-300/60">
+                    <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-frost-300/60">
                       Engineering focus
                     </p>
 
@@ -880,7 +884,7 @@ export default function App() {
                 {project.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="rounded-lg border border-white/10 bg-white/[0.035] px-2.5 py-1.5 font-mono text-[10px] text-gray-300 transition-all duration-300 group-hover:border-ice-300/15 group-hover:text-gray-200"
+                    className="rounded-lg border border-white/10 bg-white/[0.035] px-2.5 py-1.5 font-mono text-[10px] text-gray-300 transition-all duration-300 group-hover:border-frost-300/15 group-hover:text-gray-200"
                   >
                     {tag}
                   </span>
@@ -895,7 +899,7 @@ export default function App() {
                   View source
                 </span>
 
-                <span className="grid h-9 w-9 place-items-center rounded-full border border-white/10 bg-white/[0.03] text-gray-500 transition-all duration-300 group-hover:border-ice-300/30 group-hover:bg-ice-300/10 group-hover:text-ice-300">
+                <span className="grid h-9 w-9 place-items-center rounded-full border border-white/10 bg-white/[0.03] text-gray-500 transition-all duration-300 group-hover:border-frost-300/30 group-hover:bg-frost-300/10 group-hover:text-frost-300">
 
                   <Icon.ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
 
@@ -904,7 +908,7 @@ export default function App() {
               </div>
 
               {/* Bottom Accent */}
-              <div className="absolute bottom-0 left-0 h-px w-0 bg-gradient-to-r from-gold-400 via-ice-300 to-transparent transition-all duration-700 group-hover:w-full" />
+              <div className="absolute bottom-0 left-0 h-px w-0 bg-gradient-to-r from-azure-400 via-frost-300 to-transparent transition-all duration-700 group-hover:w-full" />
 
             </a>
 
@@ -927,14 +931,14 @@ export default function App() {
       <div className="glass relative overflow-hidden rounded-3xl p-7 p-9">
 
         {/* Ambient Glow */}
-        <div className="pointer-events-none absolute -right-20 -top-20 h-48 w-48 rounded-full bg-ice-400/10 blur-3xl" />
+        <div className="pointer-events-none absolute -right-20 -top-20 h-48 w-48 rounded-full bg-frost-400/10 blur-3xl" />
 
         <div className="relative flex flex-row items-center justify-between gap-6">
 
           {/* Content */}
           <div>
 
-            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-ice-300/70">
+            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-frost-300/70">
               More on GitHub
             </p>
 
@@ -985,11 +989,11 @@ export default function App() {
                     <Tilt max={4} className="glass rounded-3xl p-7 p-8">
                       <div className="flex flex-row items-start justify-between gap-5">
                         <div>
-                          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-ice-300/80">{item.period}</p>
+                          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-frost-300/80">{item.period}</p>
                           <h3 className="font-display mt-2 text-xl font-bold text-white">{item.role}</h3>
-                          <p className="mt-1 text-sm text-gold-300">{item.company}</p>
+                          <p className="mt-1 text-sm text-azure-300">{item.company}</p>
                         </div>
-                        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-white/[0.04] text-ice-300 ring-1 ring-white/10">
+                        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-white/[0.04] text-frost-300 ring-1 ring-white/10">
                           <Icon.Briefcase className="h-5 w-5" />
                         </span>
                       </div>
@@ -1001,7 +1005,7 @@ export default function App() {
               <Reveal delay={100} className="col-span-2">
                 <Tilt max={4} className="glass h-full rounded-3xl p-7 p-8">
                   <div className="flex items-center gap-3">
-                    <span className="grid h-11 w-11 place-items-center rounded-xl bg-gold-500/15 text-gold-300 ring-1 ring-white/10">
+                    <span className="grid h-11 w-11 place-items-center rounded-xl bg-azure-500/15 text-azure-300 ring-1 ring-white/10">
                       <Icon.Cap className="h-5 w-5" />
                     </span>
                     <div>
@@ -1014,7 +1018,7 @@ export default function App() {
                     {/* Education */}
                     <div>
                       <p className="font-display font-semibold text-white">Bachelor of Computer Applications (BCA)</p>
-                      <p className="mt-1 text-sm text-gold-300">St. Benedict's College · 2023–2026</p>
+                      <p className="mt-1 text-sm text-azure-300">St. Benedict's College · 2023–2026</p>
                       <p className="mt-2 text-sm text-gray-500">CGPA: 7.03 / 10</p>
                     </div>
 
@@ -1022,14 +1026,14 @@ export default function App() {
                     <div className="border-t border-white/10 pt-6">
                       <div className="flex items-start justify-between gap-4">
                         <div>
-                          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-ice-300/80">Certification</p>
+                          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-frost-300/80">Certification</p>
                           <p className="font-display mt-2 font-semibold leading-relaxed text-white">
                             Certified Specialist in Artificial Intelligence & Machine Learning
                           </p>
-                          <p className="mt-1 text-sm text-gold-300">ICT Academy of Kerala</p>
+                          <p className="mt-1 text-sm text-azure-300">ICT Academy of Kerala</p>
                         </div>
 
-                        <span className="hidden h-10 w-10 shrink-0 place-items-center rounded-xl bg-ice-400/10 text-ice-300 ring-1 ring-ice-400/20 grid">
+                        <span className="hidden h-10 w-10 shrink-0 place-items-center rounded-xl bg-frost-400/10 text-frost-300 ring-1 ring-frost-400/20 grid">
                           <Icon.Cap className="h-5 w-5" />
                         </span>
                       </div>
@@ -1050,7 +1054,7 @@ export default function App() {
                         href="/certificates/ict-academy-certificate.jpg"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="group mt-5 inline-flex items-center gap-2 rounded-xl border border-ice-400/20 bg-ice-400/10 px-4 py-2.5 text-sm font-semibold text-ice-300 transition-all duration-300 hover:border-ice-300/40 hover:bg-ice-400/20 hover:text-white"
+                        className="group mt-5 inline-flex items-center gap-2 rounded-xl border border-frost-400/20 bg-frost-400/10 px-4 py-2.5 text-sm font-semibold text-frost-300 transition-all duration-300 hover:border-frost-300/40 hover:bg-frost-400/20 hover:text-white"
                       >
                         View Certificate
                         <Icon.ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
@@ -1072,12 +1076,12 @@ export default function App() {
               <Reveal className="col-span-3">
                 <Tilt max={4} className="glass h-full rounded-3xl p-8">
                   <div className="flex items-center gap-4 border-b border-white/10 pb-6">
-                    <div className="h-16 w-16 overflow-hidden rounded-2xl border border-gold-400/60 shadow-lg shadow-gold-900/40">
+                    <div className="h-16 w-16 overflow-hidden rounded-2xl border border-azure-400/60 shadow-lg shadow-azure-900/40">
                       <img src="/photos/IMG_1.jpeg" alt="Tojo Tom Kattakayam" className="h-full w-full object-cover object-[50%_20%]" />
                     </div>
                     <div>
                       <h3 className="font-display text-xl font-semibold text-white">Tojo Tom Kattakayam</h3>
-                      <p className="text-sm text-gold-300">AI / Machine Learning Developer</p>
+                      <p className="text-sm text-azure-300">AI / Machine Learning Developer</p>
                     </div>
                   </div>
                   <p className="mt-6 text-sm leading-7 text-gray-400">
@@ -1113,7 +1117,7 @@ export default function App() {
                   handle="linkedin.com/in/tojo-tom-kattakayam"
                   description="Professional Network"
                   href="https://www.linkedin.com/in/tojo-tom-kattakayam/"
-                  tint="from-teal-500 to-emerald-700"
+                  tint="from-frost-500 to-azure-700"
                 />
                 <Social
                   delay={160}
@@ -1122,7 +1126,7 @@ export default function App() {
                   handle="tojotom05@gmail.com"
                   description="Let's talk about your project"
                   href="mailto:tojotom05@gmail.com"
-                  tint="from-gold-400 to-gold-700"
+                  tint="from-azure-400 to-azure-700"
                 />
               </div>
             </div>
@@ -1150,7 +1154,7 @@ export default function App() {
                 title="Email"
                 text="tojotom05@gmail.com"
                 cta="Send Email"
-                tint="from-gold-400 to-gold-700"
+                tint="from-azure-400 to-azure-700"
               />
               <ContactCard
                 delay={90}
@@ -1170,7 +1174,7 @@ export default function App() {
                 title="LinkedIn"
                 text="Tojo Tom Kattakayam"
                 cta="Connect"
-                tint="from-teal-500 to-emerald-700"
+                tint="from-frost-500 to-azure-700"
               />
             </div>
 
@@ -1193,7 +1197,7 @@ function SectionCentered({ eyebrow, title }: { eyebrow: string; title: string })
     <Reveal>
       <p className="eyebrow">{eyebrow}</p>
       <h2 className="font-display mt-3 text-6xl font-bold tracking-tight text-white">{title}</h2>
-      <div className="mx-auto mt-5 h-[3px] w-14 rounded-full bg-gradient-to-r from-gold-500 to-ice-400" />
+      <div className="mx-auto mt-5 h-[3px] w-14 rounded-full bg-gradient-to-r from-azure-500 to-frost-400" />
     </Reveal>
   );
 }
@@ -1201,7 +1205,7 @@ function SectionCentered({ eyebrow, title }: { eyebrow: string; title: string })
 function Detail({ icon, label, value, valueClass = "text-white" }: { icon: ReactNode; label: string; value: string; valueClass?: string }) {
   return (
     <div className="flex items-start gap-3">
-      <span className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-white/[0.05] text-gold-300 ring-1 ring-white/10 [&>svg]:h-4 [&>svg]:w-4">
+      <span className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-white/[0.05] text-azure-300 ring-1 ring-white/10 [&>svg]:h-4 [&>svg]:w-4">
         {icon}
       </span>
       <div className="min-w-0">
@@ -1246,7 +1250,7 @@ function Social({
             <span className="block truncate text-xs text-gray-400">{handle}</span>
             <span className="mt-0.5 block text-[11px] text-gray-500">{description}</span>
           </span>
-          <Icon.ArrowUpRight className="h-5 w-5 shrink-0 text-gray-500 transition-colors group-hover:text-gold-300" />
+          <Icon.ArrowUpRight className="h-5 w-5 shrink-0 text-gray-500 transition-colors group-hover:text-azure-300" />
         </a>
       </Tilt>
     </Reveal>

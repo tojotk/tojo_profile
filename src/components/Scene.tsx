@@ -2,17 +2,18 @@ import { useEffect, useRef } from "react";
 import * as THREE from "three";
 
 /**
- * Fixed full-screen 3D background: a living "neural network" sphere
- * (nodes, synapses, travelling signals, orbit rings, dust) that drifts
- * between sections as the visitor scrolls and tilts toward the cursor.
+ * Fixed full-screen 3D background: a glowing "quantum knot" — two counter-rotating
+ * torus knots made of flowing light particles, orbit rings with satellites,
+ * floating code glyphs and crystal shards. It drifts between sections as the
+ * visitor scrolls and tilts toward the cursor.
  */
 
 type Props = { activeIndex: number };
 
 type Target = { x: number; y: number; s: number; op: number };
 
-const ACCENT_A = new THREE.Color("#e5b94f"); // champagne gold
-const ACCENT_B = new THREE.Color("#4fd8b9"); // emerald ice
+const ACCENT_A = new THREE.Color("#4a80f0"); // sapphire
+const ACCENT_B = new THREE.Color("#6ec8ff"); // ice
 
 function makeSprite() {
   const c = document.createElement("canvas");
@@ -29,16 +30,79 @@ function makeSprite() {
   return t;
 }
 
-function fibonacciSphere(n: number, r: number) {
-  const pts: THREE.Vector3[] = [];
-  const phi = Math.PI * (3 - Math.sqrt(5));
+function makeGlyph(text: string) {
+  const c = document.createElement("canvas");
+  c.width = 256;
+  c.height = 128;
+  const g = c.getContext("2d")!;
+  g.font = "600 64px 'JetBrains Mono', ui-monospace, Menlo, monospace";
+  g.textAlign = "center";
+  g.textBaseline = "middle";
+  g.shadowColor = "rgba(110,200,255,0.9)";
+  g.shadowBlur = 18;
+  g.fillStyle = "#cfe6ff";
+  g.fillText(text, 128, 64);
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
+
+/** Turns a torus-knot's vertices into a glowing point cloud with a travelling pulse. */
+function knotPoints(
+  geo: THREE.TorusKnotGeometry,
+  tubular: number,
+  radial: number,
+  sizeBase: number,
+  sprite: THREE.Texture,
+  pr: number,
+  cA: THREE.Color,
+  cB: THREE.Color
+) {
+  const pos = geo.attributes.position as THREE.BufferAttribute;
+  const n = pos.count;
+  const col = new Float32Array(n * 3);
+  const phase = new Float32Array(n);
+  const size = new Float32Array(n);
+  const tmp = new THREE.Color();
   for (let i = 0; i < n; i++) {
-    const y = 1 - (i / (n - 1)) * 2;
-    const rad = Math.sqrt(1 - y * y);
-    const th = phi * i;
-    pts.push(new THREE.Vector3(Math.cos(th) * rad * r, y * r, Math.sin(th) * rad * r));
+    const along = Math.floor(i / (radial + 1)) / tubular; // 0..1 along the knot
+    phase[i] = along * Math.PI * 2;
+    tmp.copy(cA).lerp(cB, 0.5 + 0.5 * Math.sin(along * Math.PI * 4));
+    col.set([tmp.r, tmp.g, tmp.b], i * 3);
+    size[i] = sizeBase * (0.6 + Math.random() * 0.8);
   }
-  return pts;
+  const g = new THREE.BufferGeometry();
+  g.setAttribute("position", pos);
+  g.setAttribute("aCol", new THREE.BufferAttribute(col, 3));
+  g.setAttribute("aPhase", new THREE.BufferAttribute(phase, 1));
+  g.setAttribute("aSize", new THREE.BufferAttribute(size, 1));
+  const m = new THREE.ShaderMaterial({
+    transparent: true,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+    uniforms: { uTime: { value: 0 }, uPR: { value: pr }, uMap: { value: sprite }, uOpacity: { value: 1 } },
+    vertexShader: /* glsl */ `
+      attribute vec3 aCol; attribute float aPhase; attribute float aSize;
+      uniform float uTime; uniform float uPR;
+      varying vec3 vCol; varying float vGlow;
+      void main(){
+        vec4 mv = modelViewMatrix * vec4(position, 1.0);
+        // a bright pulse that races along the knot
+        float wave = 0.5 + 0.5 * sin(aPhase * 5.0 - uTime * 2.6);
+        float pulse = pow(wave, 3.0);
+        vGlow = pulse; vCol = aCol;
+        gl_PointSize = aSize * (0.55 + pulse * 1.1) * uPR * (300.0 / -mv.z);
+        gl_Position = projectionMatrix * mv;
+      }`,
+    fragmentShader: /* glsl */ `
+      uniform sampler2D uMap; uniform float uOpacity;
+      varying vec3 vCol; varying float vGlow;
+      void main(){
+        float a = texture2D(uMap, gl_PointCoord).a;
+        gl_FragColor = vec4(vCol * (0.7 + vGlow * 1.3), a * uOpacity * (0.22 + vGlow * 0.78));
+      }`,
+  });
+  return { points: new THREE.Points(g, m), geo: g, mat: m };
 }
 
 export default function Scene({ activeIndex }: Props) {
@@ -82,142 +146,44 @@ export default function Scene({ activeIndex }: Props) {
     root.add(net);
     scene.add(root);
 
-    /* ---------- nodes ---------- */
-    const outer = fibonacciSphere(130, 2.3);
-    const inner = fibonacciSphere(36, 1.15);
-    const nodes = [...outer, ...inner];
+    /* ---------- outer light-knot ---------- */
+    const T1 = 420;
+    const R1 = 26;
+    const knotGeo = new THREE.TorusKnotGeometry(1.55, 0.52, T1, R1, 2, 3);
+    const outer = knotPoints(knotGeo, T1, R1, 0.2, sprite, pixelRatio, ACCENT_A, ACCENT_B);
+    net.add(outer.points);
+    disposables.push(outer.geo, outer.mat, knotGeo);
 
-    // add slight organic jitter
-    nodes.forEach((p) => p.add(new THREE.Vector3((Math.random() - 0.5) * 0.14, (Math.random() - 0.5) * 0.14, (Math.random() - 0.5) * 0.14)));
-
-    const nPos = new Float32Array(nodes.length * 3);
-    const nCol = new Float32Array(nodes.length * 3);
-    const nPhase = new Float32Array(nodes.length);
-    const nSize = new Float32Array(nodes.length);
-    nodes.forEach((p, i) => {
-      nPos.set([p.x, p.y, p.z], i * 3);
-      const c = ACCENT_A.clone().lerp(ACCENT_B, (p.y / 2.3 + 1) / 2);
-      nCol.set([c.r, c.g, c.b], i * 3);
-      nPhase[i] = Math.random() * Math.PI * 2;
-      nSize[i] = i < outer.length ? 0.2 + Math.random() * 0.12 : 0.3 + Math.random() * 0.12;
-    });
-
-    const nodeGeo = new THREE.BufferGeometry();
-    nodeGeo.setAttribute("position", new THREE.BufferAttribute(nPos, 3));
-    nodeGeo.setAttribute("aCol", new THREE.BufferAttribute(nCol, 3));
-    nodeGeo.setAttribute("aPhase", new THREE.BufferAttribute(nPhase, 1));
-    nodeGeo.setAttribute("aSize", new THREE.BufferAttribute(nSize, 1));
-    const nodeMat = new THREE.ShaderMaterial({
+    /* faint structural mesh so the knot reads as a solid form */
+    const meshGeo = new THREE.TorusKnotGeometry(1.55, 0.52, 120, 10, 2, 3);
+    const meshWire = new THREE.WireframeGeometry(meshGeo);
+    const meshMat = new THREE.LineBasicMaterial({
+      color: ACCENT_A,
       transparent: true,
-      depthWrite: false,
-      blending: THREE.AdditiveBlending,
-      uniforms: {
-        uTime: { value: 0 },
-        uPR: { value: pixelRatio },
-        uMap: { value: sprite },
-        uOpacity: { value: 1 },
-      },
-      vertexShader: /* glsl */ `
-        attribute vec3 aCol; attribute float aPhase; attribute float aSize;
-        uniform float uTime; uniform float uPR;
-        varying vec3 vCol; varying float vGlow;
-        void main(){
-          vec4 mv = modelViewMatrix * vec4(position, 1.0);
-          float pulse = 0.62 + 0.38 * sin(uTime * 1.5 + aPhase);
-          vGlow = pulse; vCol = aCol;
-          gl_PointSize = aSize * (0.8 + pulse * 0.5) * uPR * (320.0 / -mv.z);
-          gl_Position = projectionMatrix * mv;
-        }`,
-      fragmentShader: /* glsl */ `
-        uniform sampler2D uMap; uniform float uOpacity;
-        varying vec3 vCol; varying float vGlow;
-        void main(){
-          float a = texture2D(uMap, gl_PointCoord).a;
-          gl_FragColor = vec4(vCol * (0.9 + vGlow * 0.7), a * uOpacity * (0.55 + vGlow * 0.45));
-        }`,
-    });
-    net.add(new THREE.Points(nodeGeo, nodeMat));
-    disposables.push(nodeGeo, nodeMat);
-
-    /* ---------- synapses ---------- */
-    const edges: [number, number][] = [];
-    const seen = new Set<string>();
-    const addEdge = (a: number, b: number) => {
-      const k = a < b ? `${a}-${b}` : `${b}-${a}`;
-      if (seen.has(k)) return;
-      seen.add(k);
-      edges.push([a, b]);
-    };
-    for (let i = 0; i < outer.length; i++) {
-      for (let j = i + 1; j < outer.length; j++) {
-        if (nodes[i].distanceTo(nodes[j]) < 0.95) addEdge(i, j);
-      }
-    }
-    for (let i = 0; i < inner.length; i++) {
-      const ii = outer.length + i;
-      for (let j = i + 1; j < inner.length; j++) {
-        if (nodes[ii].distanceTo(nodes[outer.length + j]) < 0.85) addEdge(ii, outer.length + j);
-      }
-      const near = outer
-        .map((p, idx) => ({ idx, d: p.distanceTo(nodes[ii]) }))
-        .sort((a, b) => a.d - b.d)
-        .slice(0, 2);
-      near.forEach((n) => addEdge(ii, n.idx));
-    }
-
-    const lPos = new Float32Array(edges.length * 6);
-    const lCol = new Float32Array(edges.length * 6);
-    edges.forEach(([a, b], i) => {
-      lPos.set([nodes[a].x, nodes[a].y, nodes[a].z, nodes[b].x, nodes[b].y, nodes[b].z], i * 6);
-      const ca = ACCENT_A.clone().lerp(ACCENT_B, (nodes[a].y / 2.3 + 1) / 2);
-      const cb = ACCENT_A.clone().lerp(ACCENT_B, (nodes[b].y / 2.3 + 1) / 2);
-      lCol.set([ca.r, ca.g, ca.b, cb.r, cb.g, cb.b], i * 6);
-    });
-    const lineGeo = new THREE.BufferGeometry();
-    lineGeo.setAttribute("position", new THREE.BufferAttribute(lPos, 3));
-    lineGeo.setAttribute("color", new THREE.BufferAttribute(lCol, 3));
-    const lineMat = new THREE.LineBasicMaterial({
-      vertexColors: true,
-      transparent: true,
-      opacity: 0.3,
+      opacity: 0.13,
       blending: THREE.AdditiveBlending,
       depthWrite: false,
     });
-    net.add(new THREE.LineSegments(lineGeo, lineMat));
-    disposables.push(lineGeo, lineMat);
+    net.add(new THREE.LineSegments(meshWire, meshMat));
+    disposables.push(meshGeo, meshWire, meshMat);
 
-    /* ---------- travelling signals ---------- */
-    const SIGNALS = 46;
-    const sigEdge = new Int32Array(SIGNALS);
-    const sigT = new Float32Array(SIGNALS);
-    const sigSpeed = new Float32Array(SIGNALS);
-    for (let i = 0; i < SIGNALS; i++) {
-      sigEdge[i] = Math.floor(Math.random() * edges.length);
-      sigT[i] = Math.random();
-      sigSpeed[i] = 0.25 + Math.random() * 0.5;
-    }
-    const sigPos = new Float32Array(SIGNALS * 3);
-    const sigGeo = new THREE.BufferGeometry();
-    sigGeo.setAttribute("position", new THREE.BufferAttribute(sigPos, 3));
-    const sigMat = new THREE.PointsMaterial({
-      map: sprite,
-      size: 0.28,
-      color: 0xffffff,
-      transparent: true,
-      depthWrite: false,
-      blending: THREE.AdditiveBlending,
-      sizeAttenuation: true,
-    });
-    net.add(new THREE.Points(sigGeo, sigMat));
-    disposables.push(sigGeo, sigMat);
+    /* ---------- inner counter-rotating knot ---------- */
+    const T2 = 220;
+    const R2 = 12;
+    const knot2Geo = new THREE.TorusKnotGeometry(0.78, 0.2, T2, R2, 3, 2);
+    const inner = knotPoints(knot2Geo, T2, R2, 0.26, sprite, pixelRatio, ACCENT_B, new THREE.Color("#dff1ff"));
+    const innerGroup = new THREE.Group();
+    innerGroup.add(inner.points);
+    net.add(innerGroup);
+    disposables.push(inner.geo, inner.mat, knot2Geo);
 
     /* ---------- core ---------- */
-    const coreGeo = new THREE.IcosahedronGeometry(0.5, 1);
+    const coreGeo = new THREE.OctahedronGeometry(0.34, 0);
     const coreMat = new THREE.MeshBasicMaterial({
       color: ACCENT_B,
       wireframe: true,
       transparent: true,
-      opacity: 0.85,
+      opacity: 0.9,
     });
     const core = new THREE.Mesh(coreGeo, coreMat);
     net.add(core);
@@ -225,12 +191,12 @@ export default function Scene({ activeIndex }: Props) {
       map: sprite,
       color: ACCENT_A,
       transparent: true,
-      opacity: 0.55,
+      opacity: 0.5,
       blending: THREE.AdditiveBlending,
       depthWrite: false,
     });
     const halo = new THREE.Sprite(haloMat);
-    halo.scale.set(4.2, 4.2, 1);
+    halo.scale.set(4.4, 4.4, 1);
     net.add(halo);
     disposables.push(coreGeo, coreMat, haloMat);
 
@@ -238,8 +204,8 @@ export default function Scene({ activeIndex }: Props) {
     const rings: THREE.Mesh[] = [];
     const ringMats: THREE.MeshBasicMaterial[] = [];
     [
-      { r: 3.1, tilt: [1.2, 0.2], color: ACCENT_B, speed: 0.18 },
-      { r: 3.5, tilt: [0.5, -0.9], color: ACCENT_A, speed: -0.12 },
+      { r: 3.15, tilt: [1.2, 0.2], color: ACCENT_B, speed: 0.18 },
+      { r: 3.55, tilt: [0.5, -0.9], color: ACCENT_A, speed: -0.12 },
     ].forEach((cfg) => {
       const g = new THREE.TorusGeometry(cfg.r, 0.006, 8, 220);
       const m = new THREE.MeshBasicMaterial({
@@ -252,7 +218,6 @@ export default function Scene({ activeIndex }: Props) {
       const ring = new THREE.Mesh(g, m);
       ring.rotation.set(cfg.tilt[0], cfg.tilt[1], 0);
       ring.userData.speed = cfg.speed;
-      // satellite
       const sat = new THREE.Sprite(
         new THREE.SpriteMaterial({
           map: sprite,
@@ -285,7 +250,7 @@ export default function Scene({ activeIndex }: Props) {
     const dustMat = new THREE.PointsMaterial({
       map: sprite,
       size: 0.09,
-      color: 0xf3dfaa,
+      color: 0xb8d4ff,
       transparent: true,
       opacity: 0.55,
       depthWrite: false,
@@ -296,17 +261,13 @@ export default function Scene({ activeIndex }: Props) {
     disposables.push(dustGeo, dustMat);
 
     /* ---------- floating crystal shards (depth layers) ---------- */
-    const shardGeos = [
-      new THREE.OctahedronGeometry(1, 0),
-      new THREE.TetrahedronGeometry(1, 0),
-      new THREE.IcosahedronGeometry(1, 0),
-    ];
+    const shardGeos = [new THREE.OctahedronGeometry(1, 0), new THREE.TetrahedronGeometry(1, 0), new THREE.IcosahedronGeometry(1, 0)];
     const shardGroup = new THREE.Group();
     scene.add(shardGroup);
-    type Shard = { mesh: THREE.Group; spin: THREE.Vector3; base: THREE.Vector3; depth: number; phase: number };
-    const shards: Shard[] = [];
+    type Floater = { mesh: THREE.Object3D; spin: THREE.Vector3; base: THREE.Vector3; depth: number; phase: number };
+    const shards: Floater[] = [];
     const shardMats: THREE.Material[] = [];
-    const SHARDS = 18;
+    const SHARDS = 16;
     for (let i = 0; i < SHARDS; i++) {
       const geo = shardGeos[i % shardGeos.length];
       const col = i % 3 === 0 ? ACCENT_B : ACCENT_A;
@@ -320,8 +281,7 @@ export default function Scene({ activeIndex }: Props) {
         new THREE.MeshBasicMaterial({ color: col, transparent: true, opacity: 0.05, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide })
       );
       g.add(wire, face);
-      const sc = 0.12 + Math.random() * 0.34;
-      g.scale.setScalar(sc);
+      g.scale.setScalar(0.12 + Math.random() * 0.34);
       const depth = -Math.random() * 9 - 0.5;
       const base = new THREE.Vector3((Math.random() - 0.5) * 22, (Math.random() - 0.5) * 12, depth);
       g.position.copy(base);
@@ -338,15 +298,33 @@ export default function Scene({ activeIndex }: Props) {
     }
     shardGeos.forEach((g) => disposables.push(g));
 
+    /* ---------- floating code glyphs ---------- */
+    const GLYPHS = ["</>", "{ }", "λ", "0101", "∑", "AI", "[ ]", "=>", "py", "∇", "01", "#!"];
+    const glyphGroup = new THREE.Group();
+    scene.add(glyphGroup);
+    const glyphs: Floater[] = [];
+    const glyphMats: THREE.SpriteMaterial[] = [];
+    GLYPHS.forEach((txt, i) => {
+      const tex = makeGlyph(txt);
+      const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, opacity: 0.4, depthWrite: false, blending: THREE.AdditiveBlending });
+      const sp = new THREE.Sprite(mat);
+      sp.scale.set(1.5, 0.75, 1);
+      const depth = -Math.random() * 7 - 0.5;
+      const base = new THREE.Vector3(((i / GLYPHS.length) * 2 - 1) * 11 + (Math.random() - 0.5) * 2, (Math.random() - 0.5) * 11, depth);
+      sp.position.copy(base);
+      glyphGroup.add(sp);
+      glyphs.push({ mesh: sp, spin: new THREE.Vector3(), base, depth, phase: Math.random() * Math.PI * 2 });
+      glyphMats.push(mat);
+      disposables.push(tex, mat);
+    });
+
     /* ---------- layout / interaction ---------- */
-    let width = 1;
-    let height = 1;
     let aspect = 1;
     const resize = () => {
-      width = window.innerWidth;
-      height = window.innerHeight;
-      aspect = width / height;
-      renderer.setSize(width, height);
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      aspect = w / h;
+      renderer.setSize(w, h);
       camera.aspect = aspect;
       camera.updateProjectionMatrix();
     };
@@ -360,11 +338,17 @@ export default function Scene({ activeIndex }: Props) {
     };
     window.addEventListener("pointermove", onMove, { passive: true });
 
+    // a click sends a pulse through the knot (spin boost)
+    let boost = 0;
+    const onDown = () => {
+      boost = 1;
+    };
+    window.addEventListener("pointerdown", onDown, { passive: true });
+
     const targetFor = (i: number): Target => {
-      const vh = 2 * camera.position.z * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
+      const vh = 2 * 9 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
       const W = vh * aspect;
       if (aspect < 0.95) {
-        // portrait / mobile: centered, quieter, behind the content
         return [
           { x: 0, y: 3.0, s: 0.55, op: 0.32 },
           { x: 0, y: 3.2, s: 0.5, op: 0.12 },
@@ -375,12 +359,12 @@ export default function Scene({ activeIndex }: Props) {
         ][i] ?? { x: 0, y: 3, s: 0.5, op: 0.12 };
       }
       return [
-        { x: 0, y: 0.2, s: 1.12, op: 0.8 },
-        { x: -W * 0.43, y: 0.4, s: 0.55, op: 0.26 },
-        { x: W * 0.45, y: 0.2, s: 0.55, op: 0.24 },
-        { x: -W * 0.46, y: -0.3, s: 0.52, op: 0.22 },
-        { x: W * 0.45, y: 0.1, s: 0.55, op: 0.24 },
-        { x: 0, y: -1.2, s: 1.0, op: 0.14 },
+        { x: 0, y: 0.2, s: 1.12, op: 0.85 },
+        { x: -W * 0.43, y: 0.4, s: 0.55, op: 0.28 },
+        { x: W * 0.45, y: 0.2, s: 0.55, op: 0.26 },
+        { x: -W * 0.46, y: -0.3, s: 0.52, op: 0.24 },
+        { x: W * 0.45, y: 0.1, s: 0.55, op: 0.26 },
+        { x: 0, y: -1.2, s: 1.0, op: 0.16 },
       ][i] ?? { x: 0, y: 0, s: 1, op: 0.2 };
     };
 
@@ -388,9 +372,9 @@ export default function Scene({ activeIndex }: Props) {
     root.position.set(cur.x, cur.y, 0);
     root.scale.setScalar(cur.s);
 
-    const sigA = new THREE.Vector3();
     const clock = new THREE.Clock();
     let time = 0;
+    let spinExtra = 0;
     let raf = 0;
 
     const tick = () => {
@@ -409,22 +393,26 @@ export default function Scene({ activeIndex }: Props) {
       mouse.x += (mouse.tx - mouse.x) * (1 - Math.exp(-dt * 4));
       mouse.y += (mouse.ty - mouse.y) * (1 - Math.exp(-dt * 4));
 
+      boost *= Math.exp(-dt * 1.6);
+      spinExtra += boost * dt * 5 * motion;
+
       const scrollY = window.scrollY;
       root.position.set(cur.x + mouse.x * 0.25, cur.y - mouse.y * 0.18 - scrollY * 0.0004, 0);
-      root.scale.setScalar(cur.s);
+      root.scale.setScalar(cur.s * (1 + boost * 0.06));
 
       camera.position.z = 9 - Math.min(scrollY / 6000, 1) * 1.2;
       camera.position.x = mouse.x * 0.35;
       camera.position.y = -mouse.y * 0.25;
       camera.lookAt(0, 0, 0);
 
-      net.rotation.y = time * 0.12 + scrollY * 0.0012 + mouse.x * 0.35;
-      net.rotation.x = Math.sin(time * 0.15) * 0.12 + mouse.y * 0.22;
-      core.rotation.x = time * 0.5;
-      core.rotation.y = time * 0.7;
-      const breathe = 1 + Math.sin(time * 1.4) * 0.08;
-      core.scale.setScalar(breathe);
-      halo.scale.setScalar(4.2 + Math.sin(time * 1.4) * 0.25);
+      net.rotation.y = time * 0.18 + spinExtra + scrollY * 0.0012 + mouse.x * 0.35;
+      net.rotation.x = Math.sin(time * 0.2) * 0.18 + mouse.y * 0.22;
+      innerGroup.rotation.y = -time * 0.6;
+      innerGroup.rotation.z = time * 0.35;
+      core.rotation.x = time * 0.8;
+      core.rotation.y = time * 1.1;
+      core.scale.setScalar(1 + Math.sin(time * 1.6) * 0.14);
+      halo.scale.setScalar(4.4 + Math.sin(time * 1.6) * 0.3 + boost * 1.2);
 
       rings.forEach((ring, i) => {
         ring.rotation.z += ring.userData.speed * dt * motion;
@@ -433,45 +421,19 @@ export default function Scene({ activeIndex }: Props) {
         sat.position.set(Math.cos(a) * sat.userData.r, Math.sin(a) * sat.userData.r, 0);
       });
 
-      // signals
-      const sp = sigGeo.attributes.position as THREE.BufferAttribute;
-      for (let i = 0; i < SIGNALS; i++) {
-        sigT[i] += sigSpeed[i] * dt * motion;
-        if (sigT[i] >= 1) {
-          // hop to a connected edge so the signal feels like it propagates
-          const [, b] = edges[sigEdge[i]];
-          const options: number[] = [];
-          for (let e = 0; e < edges.length && options.length < 8; e++) {
-            const idx = (sigEdge[i] * 7 + e * 13) % edges.length;
-            if (edges[idx][0] === b || edges[idx][1] === b) options.push(idx);
-          }
-          sigEdge[i] = options.length ? options[Math.floor(Math.random() * options.length)] : Math.floor(Math.random() * edges.length);
-          sigT[i] = 0;
-        }
-        const [a, b] = edges[sigEdge[i]];
-        sigA.copy(nodes[a]).lerp(nodes[b], sigT[i]);
-        sp.setXYZ(i, sigA.x, sigA.y, sigA.z);
-      }
-      sp.needsUpdate = true;
-
-      // opacity by section
-      nodeMat.uniforms.uTime.value = time;
-      nodeMat.uniforms.uOpacity.value = cur.op;
-      lineMat.opacity = 0.3 * cur.op;
-      sigMat.opacity = Math.min(1, cur.op * 1.1);
-      coreMat.opacity = 0.85 * cur.op;
-      haloMat.opacity = 0.55 * cur.op;
+      outer.mat.uniforms.uTime.value = time;
+      outer.mat.uniforms.uOpacity.value = cur.op;
+      inner.mat.uniforms.uTime.value = time * 1.3;
+      inner.mat.uniforms.uOpacity.value = cur.op;
+      meshMat.opacity = 0.13 * cur.op;
+      coreMat.opacity = 0.9 * cur.op;
+      haloMat.opacity = 0.5 * cur.op;
       ringMats.forEach((m) => (m.opacity = 0.5 * cur.op));
-      shardMats.forEach((m, i) => (m.opacity = (i % 2 === 0 ? 0.5 : 0.05) * (0.55 + cur.op * 0.45)));
       (rings[0].userData.sat as THREE.Sprite).material.opacity = cur.op;
       (rings[1].userData.sat as THREE.Sprite).material.opacity = cur.op;
+      shardMats.forEach((m, i) => (m.opacity = (i % 2 === 0 ? 0.5 : 0.05) * (0.55 + cur.op * 0.45)));
 
-      // dust parallax
-      dust.position.y = scrollY * 0.0016;
-      dust.rotation.y = time * 0.01 + mouse.x * 0.05;
-      dust.position.x = -mouse.x * 0.3;
-
-      // shards: slow tumble, bobbing, parallax by depth (near ones move more)
+      // shards: tumble + bob + parallax by depth (near ones move more)
       shards.forEach((sh) => {
         const par = 1 / (1 - sh.depth * 0.18);
         sh.mesh.rotation.x += sh.spin.x * dt * motion;
@@ -484,6 +446,21 @@ export default function Scene({ activeIndex }: Props) {
         );
       });
 
+      // code glyphs drift upward and wrap, fading near the edges
+      glyphs.forEach((gl, i) => {
+        const par = 1 / (1 - gl.depth * 0.18);
+        const y = gl.base.y + time * (0.35 + (i % 4) * 0.12) + gl.phase + scrollY * 0.0014 * par * 3;
+        const wrapped = ((((y + 7) % 14) + 14) % 14) - 7;
+        gl.mesh.position.set(gl.base.x - mouse.x * 1.1 * par + Math.sin(time * 0.4 + gl.phase) * 0.3, wrapped - mouse.y * 0.7 * par, gl.base.z);
+        const edge = 1 - Math.min(1, Math.abs(wrapped) / 7);
+        glyphMats[i].opacity = 0.42 * edge * (0.5 + cur.op * 0.5);
+      });
+
+      // dust parallax
+      dust.position.y = scrollY * 0.0016;
+      dust.rotation.y = time * 0.01 + mouse.x * 0.05;
+      dust.position.x = -mouse.x * 0.3;
+
       renderer.render(scene, camera);
     };
     tick();
@@ -492,6 +469,7 @@ export default function Scene({ activeIndex }: Props) {
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", resize);
       window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerdown", onDown);
       disposables.forEach((d) => d.dispose());
       renderer.dispose();
       if (renderer.domElement.parentNode === mount) mount.removeChild(renderer.domElement);
