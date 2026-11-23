@@ -327,6 +327,7 @@ export default function Scene({ activeIndex }: Props) {
           { x: 0, y: 3.2, s: 0.5, op: 0.12 },
           { x: 0, y: 3.2, s: 0.5, op: 0.12 },
           { x: 0, y: 3.2, s: 0.5, op: 0.12 },
+          { x: 0, y: 3.2, s: 0.5, op: 0.12 },
           { x: 0, y: 3.0, s: 0.5, op: 0.14 },
         ][i] ?? { x: 0, y: 3, s: 0.5, op: 0.12 };
       }
@@ -335,6 +336,7 @@ export default function Scene({ activeIndex }: Props) {
         { x: -W * 0.43, y: 0.4, s: 0.55, op: 0.26 },
         { x: W * 0.45, y: 0.2, s: 0.55, op: 0.24 },
         { x: -W * 0.46, y: -0.3, s: 0.52, op: 0.22 },
+        { x: W * 0.45, y: 0.1, s: 0.55, op: 0.24 },
         { x: 0, y: -1.2, s: 1.0, op: 0.14 },
       ][i] ?? { x: 0, y: 0, s: 1, op: 0.2 };
     };

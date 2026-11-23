@@ -2,7 +2,52 @@ import { useEffect, useState, type ReactNode } from "react";
 import Scene from "./components/Scene";
 import { Icon, Reveal, SectionHeader, Tilt } from "./components/ui";
 
-const NAV_LINKS = ["About", "Profile", "Skills", "Projects", "Contact"] as const;
+const NAV_LINKS = ["About", "Services", "Skills", "Projects", "Profile", "Contact"] as const;
+
+const MARQUEE = [
+  "Python",
+  "Django",
+  "Machine Learning",
+  "Scikit-learn",
+  "Pandas",
+  "NumPy",
+  "Matplotlib",
+  "Jupyter",
+  "MySQL",
+  "JavaScript",
+  "HTML5 / CSS3",
+  "PHP",
+  "Java",
+  "Git & GitHub",
+];
+
+const SERVICES = [
+  {
+    icon: Icon.Cpu,
+    title: "Machine Learning & Data",
+    text: "Predictive models and data analysis, from cleaning and preprocessing to training and evaluation.",
+    tags: ["Scikit-learn", "Pandas", "NumPy", "Matplotlib"],
+  },
+  {
+    icon: Icon.Code,
+    title: "Full-Stack Python Development",
+    text: "Web applications with a Django backend, MySQL data layer and a responsive HTML, CSS and JavaScript frontend.",
+    tags: ["Python", "Django", "MySQL", "JavaScript"],
+  },
+  {
+    icon: Icon.Layers,
+    title: "Intelligent Applications",
+    text: "Taking models out of the notebook and into real products that people can use.",
+    tags: ["Jupyter", "Git", "GitHub", "Figma"],
+  },
+];
+
+const PIPELINE = [
+  { icon: Icon.Database, label: "Data", text: "Collect, clean & explore" },
+  { icon: Icon.Cpu, label: "Model", text: "Train & evaluate" },
+  { icon: Icon.Code, label: "Backend", text: "Django & MySQL" },
+  { icon: Icon.Layers, label: "Interface", text: "Responsive web UI" },
+];
 
 const SKILLS = [
   {
@@ -19,11 +64,6 @@ const SKILLS = [
     category: "Frameworks & Tools",
     icon: Icon.Tool,
     items: ["Django", "Git", "GitHub", "VS Code", "PyCharm", "Google Colab", "Figma"],
-  },
-  {
-    category: "Photography",
-    icon: Icon.Camera,
-    items: ["Concert Photography", "Event Photography", "Portrait Photography", "Adobe Lightroom", "Adobe Photoshop", "Visual Storytelling"],
   },
   {
     category: "Professional Skills",
@@ -113,7 +153,7 @@ export default function App() {
       {/* ================= Navbar ================= */}
       <header className="fixed inset-x-0 top-0 z-50 flex justify-center px-4 pt-4">
         <nav
-          className={`glass flex w-full max-w-3xl items-center justify-between rounded-full py-2 pl-5 pr-2 transition-all duration-300 ${
+          className={`glass flex w-full max-w-4xl items-center justify-between rounded-full py-2 pl-5 pr-2 transition-all duration-300 ${
             scrolled ? "shadow-2xl shadow-black/50" : ""
           }`}
           aria-label="Primary"
@@ -166,7 +206,7 @@ export default function App() {
 
       <main className="relative z-10">
         {/* ================= Hero / About ================= */}
-        <section id="about" className="relative flex min-h-[100dvh] items-center px-6 pb-16 pt-28 md:px-10">
+        <section id="about" className="relative flex min-h-[100dvh] items-center px-6 pb-24 pt-28 md:px-10">
           <div className="mx-auto grid w-full max-w-7xl items-center gap-14 md:grid-cols-2">
             <div className="space-y-7">
               <Reveal>
@@ -188,14 +228,13 @@ export default function App() {
               </Reveal>
               <Reveal delay={160}>
                 <p className="font-display text-xl font-medium text-gray-200 md:text-2xl">
-                  AI &amp; ML Developer <span className="mx-2 text-violet-400">/</span> Photographer
+                  AI &amp; ML Developer <span className="mx-2 text-violet-400">/</span> Full-Stack Python
                 </p>
               </Reveal>
               <Reveal delay={240}>
                 <p className="max-w-lg text-base leading-relaxed text-gray-400 md:text-lg">
-                  AI &amp; Machine Learning Developer passionate about building intelligent systems, developing predictive models, and
-                  solving complex real-world problems through data and innovation. Also a creative photographer who loves capturing
-                  moments that tell stories.
+                  I build intelligent systems and the web applications around them — predictive models, data pipelines and full-stack
+                  Python products with Django, taking ideas from raw data all the way to a working interface.
                 </p>
               </Reveal>
               <Reveal delay={320} className="flex flex-wrap gap-4 pt-2">
@@ -208,7 +247,7 @@ export default function App() {
               </Reveal>
             </div>
 
-            {/* 3D portrait */}
+            {/* 3D portrait + code window */}
             <Reveal delay={200} className="flex justify-center md:justify-end">
               <Tilt max={10} className="relative">
                 <div className="relative h-[22rem] w-[17rem] sm:h-[26rem] sm:w-[20rem] md:h-[30rem] md:w-[23rem]">
@@ -218,20 +257,36 @@ export default function App() {
                     <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-transparent to-transparent" />
                   </div>
 
-                  {/* floating depth chips */}
                   <div className="absolute -left-6 top-12 hidden sm:block" style={{ transform: "translateZ(70px)" }}>
                     <div className="glass float flex items-center gap-2 rounded-2xl px-4 py-2.5 text-sm font-medium text-white shadow-xl">
                       <Icon.Cpu className="h-4 w-4 text-cyan-300" /> Machine Learning
                     </div>
                   </div>
-                  <div className="absolute -right-5 bottom-28 hidden sm:block" style={{ transform: "translateZ(90px)" }}>
-                    <div className="glass float flex items-center gap-2 rounded-2xl px-4 py-2.5 text-sm font-medium text-white [animation-delay:-2s]">
-                      <Icon.Camera className="h-4 w-4 text-violet-300" /> Photography
+                  <div className="absolute -right-5 top-[52%] hidden sm:block" style={{ transform: "translateZ(90px)" }}>
+                    <div className="glass float flex items-center gap-2 rounded-2xl px-4 py-2.5 text-sm font-medium text-white shadow-xl [animation-delay:-2s]">
+                      <Icon.Code className="h-4 w-4 text-emerald-300" /> Django
                     </div>
                   </div>
-                  <div className="absolute -bottom-5 left-8 hidden sm:block" style={{ transform: "translateZ(50px)" }}>
-                    <div className="glass float flex items-center gap-2 rounded-2xl px-4 py-2.5 text-sm font-medium text-white [animation-delay:-3.5s]">
-                      <Icon.Code className="h-4 w-4 text-emerald-300" /> Python
+
+                  <div className="absolute -bottom-8 -left-16 hidden w-[17.5rem] lg:block" style={{ transform: "translateZ(100px)" }}>
+                    <div className="glass float code-window overflow-hidden rounded-2xl shadow-2xl [animation-delay:-3.5s]">
+                      <div className="flex items-center gap-1.5 border-b border-white/10 px-4 py-2.5">
+                        <span className="h-2.5 w-2.5 rounded-full bg-rose-400/80" />
+                        <span className="h-2.5 w-2.5 rounded-full bg-amber-300/80" />
+                        <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/80" />
+                        <span className="ml-2 text-[10px] text-gray-500">train.py</span>
+                      </div>
+                      <pre className="overflow-hidden px-4 py-3 text-gray-300">
+                        <code>
+                          <span className="text-violet-300">model</span> = <span className="text-cyan-300">RandomForest</span>()
+                          {"\n"}
+                          <span className="text-violet-300">model</span>.<span className="text-amber-200">fit</span>(X_train, y_train)
+                          {"\n"}
+                          <span className="text-gray-500"># accuracy</span>
+                          {"\n"}
+                          <span className="text-emerald-300">print</span>(model.<span className="text-amber-200">score</span>(X_test, y_test))
+                        </code>
+                      </pre>
                     </div>
                   </div>
                 </div>
@@ -240,8 +295,8 @@ export default function App() {
           </div>
 
           <button
-            onClick={() => go("profile")}
-            aria-label="Scroll to profile"
+            onClick={() => go("services")}
+            aria-label="Scroll down"
             className="absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-gray-500 hover:text-gray-300 md:flex"
           >
             Scroll
@@ -251,88 +306,89 @@ export default function App() {
           </button>
         </section>
 
-        {/* ================= Profile ================= */}
-        <section id="profile" className="px-6 py-28 md:px-10">
-          <div className="mx-auto max-w-6xl">
-            <SectionHeader eyebrow="Get to know me" title="Profile" />
-            <div className="mt-14 grid gap-6 md:grid-cols-5">
-              <Reveal className="md:col-span-3">
-                <Tilt max={4} className="glass h-full rounded-3xl p-8">
-                  <div className="flex items-center gap-4 border-b border-white/10 pb-6">
-                    <div className="h-16 w-16 overflow-hidden rounded-2xl border border-violet-400/60 shadow-lg shadow-violet-900/40">
-                      <img src="/photos/IMG_1.jpeg" alt="Tojo Tom Kattakayam" className="h-full w-full object-cover object-[50%_20%]" />
-                    </div>
-                    <div>
-                      <h3 className="font-display text-xl font-semibold text-white">Tojo Tom Kattakayam</h3>
-                      <p className="text-sm text-violet-300">AI / ML Developer · Photographer</p>
-                    </div>
-                  </div>
-                  <dl className="mt-6 grid gap-x-8 gap-y-5 sm:grid-cols-2">
-                    <Detail icon={<Icon.Pin />} label="Location" value="Kozhikode, Kerala, India" />
-                    <Detail icon={<Icon.User />} label="Age" value="21" />
-                    <Detail icon={<Icon.Mail />} label="Email" value="tojotom05@gmail.com" />
-                    <Detail icon={<Icon.Phone />} label="Phone" value="+91 8921981997" />
-                    <Detail icon={<Icon.Cap />} label="Education" value="BCA — AI/ML" />
-                    <Detail icon={<Icon.Briefcase />} label="Status" value="Available for work" valueClass="text-emerald-400" />
-                    <Detail icon={<Icon.Globe />} label="Languages" value="English, Malayalam" />
-                    <Detail icon={<Icon.Target />} label="Interests" value="AI/ML, Music, Photography" />
-                  </dl>
-                </Tilt>
-              </Reveal>
+        {/* ================= Tech marquee ================= */}
+        <div className="marquee relative border-y border-white/[0.06] bg-black/20 py-5 backdrop-blur-sm" aria-hidden="true">
+          <div className="marquee-track">
+            {[...MARQUEE, ...MARQUEE].map((t, i) => (
+              <span key={i} className="flex items-center gap-3 whitespace-nowrap rounded-full border border-white/10 bg-white/[0.03] px-5 py-2 font-mono text-xs text-gray-300">
+                <span className="h-1.5 w-1.5 rounded-full bg-gradient-to-br from-violet-400 to-cyan-300" />
+                {t}
+              </span>
+            ))}
+          </div>
+        </div>
 
-              <div className="space-y-4 md:col-span-2">
-                <Social
-                  delay={0}
-                  icon={<Icon.Instagram />}
-                  label="Instagram"
-                  handle="@storiesoftt.k"
-                  description="Concerts | Artists | Backstage"
-                  href="https://www.instagram.com/storiesoftt.k?igsh=OXFmcDhkeW5wa3Vk&utm_source=qr/"
-                  tint="from-pink-500 to-orange-400"
-                />
-                <Social
-                  delay={80}
-                  icon={<Icon.Instagram />}
-                  label="Instagram"
-                  handle="@framesoftt.k"
-                  description="Faces | Love | Moments"
-                  href="https://www.instagram.com/framesoftt.k?igsh=MXIzc2pwZG16aHJnNw%3D%3D&utm_source=qr"
-                  tint="from-fuchsia-500 to-rose-400"
-                />
-                <Social
-                  delay={160}
-                  icon={<Icon.Github />}
-                  label="GitHub"
-                  handle="github.com/tojotk"
-                  description="Code Portfolio"
-                  href="https://github.com/tojotk"
-                  tint="from-slate-500 to-slate-700"
-                />
-                <Social
-                  delay={240}
-                  icon={<Icon.Linkedin />}
-                  label="LinkedIn"
-                  handle="linkedin.com/in/tojo-tom-kattakayam"
-                  description="Professional Network"
-                  href="https://www.linkedin.com/in/tojo-tom-kattakayam/"
-                  tint="from-sky-500 to-blue-700"
-                />
-              </div>
+        {/* ================= Services ================= */}
+        <section id="services" className="px-6 py-28 md:px-10">
+          <div className="mx-auto max-w-6xl">
+            <SectionHeader
+              num="01"
+              eyebrow="What I do"
+              title="From data to deployed product"
+              intro="Machine learning and full-stack Python development, end to end."
+            />
+            <div className="mt-14 grid gap-6 md:grid-cols-3">
+              {SERVICES.map((s, i) => {
+                const S = s.icon;
+                return (
+                  <Reveal key={s.title} delay={i * 90}>
+                    <Tilt max={7} className="glass h-full rounded-3xl p-8">
+                      <span
+                        className="grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br from-violet-500 to-cyan-400 text-white shadow-lg shadow-violet-900/40"
+                        style={{ transform: "translateZ(40px)" }}
+                      >
+                        <S className="h-6 w-6" />
+                      </span>
+                      <h3 className="font-display mt-6 text-xl font-semibold text-white">{s.title}</h3>
+                      <p className="mt-3 text-sm leading-relaxed text-gray-400">{s.text}</p>
+                      <div className="mt-6 flex flex-wrap gap-2" style={{ transform: "translateZ(20px)" }}>
+                        {s.tags.map((t) => (
+                          <span key={t} className="rounded-md border border-white/10 bg-white/[0.04] px-2.5 py-1 font-mono text-[11px] text-gray-300">
+                            {t}
+                          </span>
+                        ))}
+                      </div>
+                    </Tilt>
+                  </Reveal>
+                );
+              })}
             </div>
+
+            {/* pipeline */}
+            <Reveal delay={100} className="mt-10">
+              <div className="glass grid gap-2 rounded-3xl p-3 sm:grid-cols-2 lg:grid-cols-4">
+                {PIPELINE.map((p, i) => {
+                  const P = p.icon;
+                  return (
+                    <div key={p.label} className="relative flex items-center gap-4 rounded-2xl px-5 py-4">
+                      <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-white/[0.05] text-cyan-300 ring-1 ring-white/10">
+                        <P className="h-5 w-5" />
+                      </span>
+                      <div>
+                        <p className="font-mono text-[10px] uppercase tracking-widest text-gray-500">Step 0{i + 1}</p>
+                        <p className="font-display font-semibold text-white">{p.label}</p>
+                        <p className="text-xs text-gray-400">{p.text}</p>
+                      </div>
+                      {i < PIPELINE.length - 1 && <Icon.ArrowUpRight className="absolute -right-2 top-1/2 hidden h-4 w-4 -translate-y-1/2 rotate-45 text-gray-600 lg:block" />}
+                    </div>
+                  );
+                })}
+              </div>
+            </Reveal>
           </div>
         </section>
 
         {/* ================= Skills ================= */}
         <section id="skills" className="px-6 py-28 md:px-10">
           <div className="mx-auto max-w-6xl">
-            <SectionHeader eyebrow="Technologies I work with" title="Skills" intro="From data pipelines and models to the lens — the tools I reach for every day." />
-            <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <SectionHeader num="02" eyebrow="Technologies I work with" title="Skills" intro="The languages, libraries and tools I reach for every day." />
+            <div className="mt-14 grid gap-6 md:grid-cols-2">
               {SKILLS.map((group, i) => {
                 const G = group.icon;
                 return (
                   <Reveal key={group.category} delay={i * 70}>
-                    <Tilt max={6} className="glass h-full rounded-3xl p-7">
-                      <div className="mb-5 flex items-center gap-3">
+                    <Tilt max={5} className="glass h-full rounded-3xl p-8">
+                      <div className="mb-6 flex items-center gap-3">
                         <span className="grid h-11 w-11 place-items-center rounded-xl bg-gradient-to-br from-violet-500/30 to-cyan-400/20 text-violet-200 ring-1 ring-white/10">
                           <G className="h-5 w-5" />
                         </span>
@@ -359,7 +415,7 @@ export default function App() {
         {/* ================= Projects ================= */}
         <section id="projects" className="px-6 py-28 md:px-10">
           <div className="mx-auto max-w-7xl">
-            <SectionHeader eyebrow="Open-source projects from my GitHub" title="GitHub Projects" />
+            <SectionHeader num="03" eyebrow="Open-source projects from my GitHub" title="GitHub Projects" />
             <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {repoState === "loading" &&
                 Array.from({ length: 6 }).map((_, i) => <div key={i} className="skeleton h-52 rounded-3xl border border-white/5" />)}
@@ -414,6 +470,68 @@ export default function App() {
           </div>
         </section>
 
+        {/* ================= Profile ================= */}
+        <section id="profile" className="px-6 py-28 md:px-10">
+          <div className="mx-auto max-w-6xl">
+            <SectionHeader num="04" eyebrow="Get to know me" title="Profile" />
+            <div className="mt-14 grid gap-6 md:grid-cols-5">
+              <Reveal className="md:col-span-3">
+                <Tilt max={4} className="glass h-full rounded-3xl p-8">
+                  <div className="flex items-center gap-4 border-b border-white/10 pb-6">
+                    <div className="h-16 w-16 overflow-hidden rounded-2xl border border-violet-400/60 shadow-lg shadow-violet-900/40">
+                      <img src="/photos/IMG_1.jpeg" alt="Tojo Tom Kattakayam" className="h-full w-full object-cover object-[50%_20%]" />
+                    </div>
+                    <div>
+                      <h3 className="font-display text-xl font-semibold text-white">Tojo Tom Kattakayam</h3>
+                      <p className="text-sm text-violet-300">AI / ML Developer · Full-Stack Python Developer</p>
+                    </div>
+                  </div>
+                  <dl className="mt-6 grid gap-x-8 gap-y-5 sm:grid-cols-2">
+                    <Detail icon={<Icon.Pin />} label="Location" value="Kozhikode, Kerala, India" />
+                    <Detail icon={<Icon.User />} label="Age" value="21" />
+                    <Detail icon={<Icon.Mail />} label="Email" value="tojotom05@gmail.com" />
+                    <Detail icon={<Icon.Phone />} label="Phone" value="+91 8921981997" />
+                    <Detail icon={<Icon.Cap />} label="Education" value="BCA — AI/ML" />
+                    <Detail icon={<Icon.Briefcase />} label="Status" value="Available for work" valueClass="text-emerald-400" />
+                    <Detail icon={<Icon.Globe />} label="Languages" value="English, Malayalam" />
+                    <Detail icon={<Icon.Target />} label="Interests" value="AI/ML, Full-Stack Development, Music" />
+                  </dl>
+                </Tilt>
+              </Reveal>
+
+              <div className="space-y-4 md:col-span-2">
+                <Social
+                  delay={0}
+                  icon={<Icon.Github />}
+                  label="GitHub"
+                  handle="github.com/tojotk"
+                  description="Code Portfolio"
+                  href="https://github.com/tojotk"
+                  tint="from-slate-500 to-slate-700"
+                />
+                <Social
+                  delay={80}
+                  icon={<Icon.Linkedin />}
+                  label="LinkedIn"
+                  handle="linkedin.com/in/tojo-tom-kattakayam"
+                  description="Professional Network"
+                  href="https://www.linkedin.com/in/tojo-tom-kattakayam/"
+                  tint="from-sky-500 to-blue-700"
+                />
+                <Social
+                  delay={160}
+                  icon={<Icon.Mail />}
+                  label="Email"
+                  handle="tojotom05@gmail.com"
+                  description="Let's talk about your project"
+                  href="mailto:tojotom05@gmail.com"
+                  tint="from-violet-500 to-indigo-600"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* ================= Contact ================= */}
         <section id="contact" className="px-6 pb-16 pt-28 md:px-10">
           <div className="mx-auto max-w-5xl">
@@ -421,8 +539,8 @@ export default function App() {
               <SectionCentered eyebrow="Let's connect" title="Get In Touch" />
               <Reveal delay={100}>
                 <p className="mx-auto mt-6 max-w-2xl text-gray-400 md:text-lg">
-                  Interested in collaborating on an AI/ML project, software development, or professional photography? Feel free to
-                  reach out through any of the options below.
+                  Interested in collaborating on an AI/ML project or building a Python / Django web application? Feel free to reach
+                  out through any of the options below.
                 </p>
               </Reveal>
             </div>
@@ -449,19 +567,19 @@ export default function App() {
               />
               <ContactCard
                 delay={180}
-                href="https://www.instagram.com/storiesoftt.k"
+                href="https://www.linkedin.com/in/tojo-tom-kattakayam/"
                 external
-                icon={<Icon.Instagram />}
-                title="Instagram"
-                text="@storiesoftt.k"
-                cta="Follow / Message"
-                tint="from-pink-500 to-orange-400"
+                icon={<Icon.Linkedin />}
+                title="LinkedIn"
+                text="Tojo Tom Kattakayam"
+                cta="Connect"
+                tint="from-sky-500 to-blue-700"
               />
             </div>
 
             <footer className="mt-24 flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-8 text-sm text-gray-500 sm:flex-row">
               <p>© {new Date().getFullYear()} Tojo Tom Kattakayam</p>
-              <p>Kozhikode, Kerala · India</p>
+              <p>AI &amp; ML · Full-Stack Python · Kozhikode, India</p>
             </footer>
           </div>
         </section>
