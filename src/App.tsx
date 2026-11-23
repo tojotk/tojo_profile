@@ -2,12 +2,17 @@ import { useEffect, useState, type ReactNode } from "react";
 import Scene from "./components/Scene";
 import { Icon, Reveal, SectionHeader, Tilt } from "./components/ui";
 
-const NAV_LINKS = ["About", "Services", "Skills", "Projects", "Profile", "Contact"] as const;
+const NAV_LINKS = ["About", "Services", "Skills", "Projects", "Experience", "Profile", "Contact"] as const;
 
 const MARQUEE = [
   "Python",
   "Django",
   "Machine Learning",
+  "Deep Learning",
+  "Computer Vision",
+  "NLP",
+  "Generative AI",
+  "RAG",
   "Scikit-learn",
   "Pandas",
   "NumPy",
@@ -24,21 +29,186 @@ const MARQUEE = [
 const SERVICES = [
   {
     icon: Icon.Cpu,
-    title: "Machine Learning & Data",
-    text: "Predictive models and data analysis, from cleaning and preprocessing to training and evaluation.",
-    tags: ["Scikit-learn", "Pandas", "NumPy", "Matplotlib"],
-  },
-  {
-    icon: Icon.Code,
-    title: "Full-Stack Python Development",
-    text: "Web applications with a Django backend, MySQL data layer and a responsive HTML, CSS and JavaScript frontend.",
-    tags: ["Python", "Django", "MySQL", "JavaScript"],
+    number: "01",
+    title: "AI & Machine Learning",
+    subtitle: "Intelligent systems from data to prediction",
+    text: "Designing practical machine learning solutions from data preprocessing and feature engineering to model training, evaluation, optimization and deployment.",
+    tags: [
+      "Python",
+      "Scikit-learn",
+      "Pandas",
+      "NumPy",
+      "Model Evaluation",
+    ],
   },
   {
     icon: Icon.Layers,
-    title: "Intelligent Applications",
-    text: "Taking models out of the notebook and into real products that people can use.",
-    tags: ["Jupyter", "Git", "GitHub", "Figma"],
+    number: "02",
+    title: "Generative AI & LLM",
+    subtitle: "Context-aware AI with modern language models",
+    text: "Building intelligent applications using LLMs, embeddings and retrieval pipelines to deliver contextual and useful AI experiences.",
+    tags: [
+      "LLMs",
+      "RAG",
+      "Embeddings",
+      "FAISS",
+      "Prompt Engineering",
+    ],
+  },
+  {
+    icon: Icon.Code,
+    number: "03",
+    title: "Computer Vision & NLP",
+    subtitle: "AI that understands images and language",
+    text: "Developing AI solutions for image classification, computer vision, text classification, sentiment analysis and intelligent information processing.",
+    tags: [
+      "OpenCV",
+      "CNN",
+      "TensorFlow",
+      "NLP",
+      "Transformers",
+    ],
+  },
+  {
+    icon: Icon.Database,
+    number: "04",
+    title: "AI Application Development",
+    subtitle: "Turning AI models into real products",
+    text: "Integrating machine learning and AI workflows into complete applications with APIs, databases and responsive user interfaces.",
+    tags: [
+      "FastAPI",
+      "Django",
+      "REST APIs",
+      "MySQL",
+      "React",
+    ],
+  },
+  {
+    icon: Icon.Code,
+    number: "05",
+    title: "Full-Stack Development",
+    subtitle: "Modern applications from frontend to backend",
+    text: "Building responsive full-stack applications with Python backends, modern frontend technologies, database integration and clean API architecture.",
+    tags: [
+      "Python",
+      "React",
+      "JavaScript",
+      "Django",
+      "Tailwind CSS",
+    ],
+  },
+  {
+    icon: Icon.Tool,
+    number: "06",
+    title: "Deployment & Integration",
+    subtitle: "From development to accessible applications",
+    text: "Connecting applications, APIs, repositories and deployment platforms to turn development work into maintainable and accessible products.",
+    tags: [
+      "Git",
+      "GitHub",
+      "Vercel",
+      "Netlify",
+      "API Integration",
+    ],
+  },
+];
+
+const FEATURED_PROJECTS = [
+  {
+    number: "01",
+    title: "Skinova",
+    subtitle: "AI-Powered Dermatological Screening Platform",
+    category: "Computer Vision • Generative AI • Full-Stack",
+    text: "An AI-powered dermatological screening platform combining deep-learning image classification with retrieval-augmented generation. The system uses an EfficientNet-B0 model to classify skin-condition images across seven classes based on the HAM10000 taxonomy, while a RAG pipeline uses FAISS and SentenceTransformers to provide grounded dermatological information.",
+    impact:
+      "Designed as an end-to-end AI application connecting computer vision, retrieval, backend APIs and a modern frontend.",
+    tags: [
+      "EfficientNet-B0",
+      "Computer Vision",
+      "RAG",
+      "FAISS",
+      "FastAPI",
+      "React",
+    ],
+    href: "https://github.com/tojotk/Skinova_AI_skin_disease_detection",
+    featured: true,
+  },
+
+  {
+    number: "02",
+    title: "Fake vs Real News Detection",
+    subtitle: "NLP-Based News Classification System",
+    category: "Natural Language Processing • Machine Learning",
+    text: "A natural language processing system developed to classify news articles as real or fake. The pipeline applies text preprocessing and TF-IDF feature extraction before evaluating multiple supervised learning approaches including Logistic Regression, Naive Bayes and Linear SVM.",
+    impact:
+      "The selected classification workflow was integrated into a Streamlit application, transforming the machine-learning pipeline into an interactive user-facing tool.",
+    tags: [
+      "Python",
+      "NLP",
+      "TF-IDF",
+      "Logistic Regression",
+      "Linear SVM",
+      "Streamlit",
+    ],
+    href: "https://github.com/tojotk/fake_vs_real_news_detection",
+    featured: false,
+  },
+
+  {
+    number: "03",
+    title: "AI Smart Fisheries Surveillance",
+    subtitle: "Intelligent Marine Monitoring Application",
+    category: "Computer Vision • Full-Stack • AI",
+    text: "An AI-powered surveillance concept designed to support marine monitoring, illegal-fishing detection and emergency response. The project combines an AI-driven monitoring workflow with frontend, backend and database components in a unified application architecture.",
+    impact:
+      "Demonstrates the ability to move beyond isolated machine-learning models and design AI functionality as part of a complete software system.",
+    tags: [
+      "Computer Vision",
+      "Artificial Intelligence",
+      "Full-Stack",
+      "Django",
+      "MySQL",
+    ],
+    href: "https://github.com/tojotk/smart_fisheries",
+    featured: false,
+  },
+
+  {
+    number: "04",
+    title: "Adult Income Prediction",
+    subtitle: "Supervised Machine Learning Pipeline",
+    category: "Machine Learning • Data Science • Classification",
+    text: "An end-to-end supervised learning project using approximately 48,000 records from the UCI Adult Census dataset to predict whether an individual's annual income exceeds $50K.",
+    impact:
+      "The workflow covers data cleaning, categorical feature encoding, model development and comparative evaluation across classification algorithms.",
+    tags: [
+      "Python",
+      "Pandas",
+      "Scikit-learn",
+      "Classification",
+      "Data Preprocessing",
+    ],
+    href: "https://github.com/tojotk",
+    featured: false,
+  },
+
+  {
+    number: "05",
+    title: "IMDb Sentiment Analysis",
+    subtitle: "Movie Review Sentiment Classification",
+    category: "NLP • Text Classification • Machine Learning",
+    text: "A natural language processing project developed to classify 50,000 IMDb movie reviews as positive or negative. The system applies text preprocessing and vectorization to transform unstructured review data into machine-learning features.",
+    impact:
+      "Demonstrates practical experience with text preprocessing, feature representation and supervised sentiment-classification workflows.",
+    tags: [
+      "Python",
+      "NLP",
+      "Text Classification",
+      "Vectorization",
+      "Scikit-learn",
+    ],
+    href: "https://github.com/tojotk",
+    featured: false,
   },
 ];
 
@@ -53,22 +223,163 @@ const SKILLS = [
   {
     category: "AI & Machine Learning",
     icon: Icon.Cpu,
-    items: ["Machine Learning", "Data Analysis", "Data Preprocessing", "Scikit-learn", "Pandas", "NumPy", "Matplotlib", "Jupyter Notebook"],
+    items: [
+      "Machine Learning",
+      "Supervised Learning",
+      "Unsupervised Learning",
+      "Regression",
+      "Classification",
+      "Clustering",
+      "Feature Engineering",
+      "Feature Selection",
+      "Model Training",
+      "Model Evaluation",
+      "Cross Validation",
+      "Hyperparameter Tuning",
+      "Scikit-learn",
+    ],
   },
   {
-    category: "Programming",
+    category: "Deep Learning & Computer Vision",
+    icon: Icon.Layers,
+    items: [
+      "Deep Learning",
+      "Neural Networks",
+      "CNN",
+      "Transfer Learning",
+      "EfficientNet",
+      "TensorFlow",
+      "Keras",
+      "PyTorch",
+      "OpenCV",
+      "Computer Vision",
+      "Image Classification",
+      "Image Processing",
+      "Object Detection",
+    ],
+  },
+  {
+    category: "Generative AI & LLM",
+    icon: Icon.Cpu,
+    items: [
+      "Generative AI",
+      "Large Language Models",
+      "LLM Integration",
+      "RAG",
+      "Retrieval-Augmented Generation",
+      "Prompt Engineering",
+      "Embeddings",
+      "Vector Search",
+      "FAISS",
+      "Sentence Transformers",
+      "AI Agents",
+      "AI Application Development",
+    ],
+  },
+  {
+    category: "Natural Language Processing",
     icon: Icon.Code,
-    items: ["Python", "Java", "JavaScript", "PHP", "HTML5", "CSS3", "MySQL"],
+    items: [
+      "NLP",
+      "Text Preprocessing",
+      "Tokenization",
+      "Text Classification",
+      "Sentiment Analysis",
+      "TF-IDF",
+      "Word Embeddings",
+      "Semantic Search",
+      "Transformer Models",
+      "BERT",
+      "NLP Pipelines",
+    ],
   },
   {
-    category: "Frameworks & Tools",
+    category: "Data Science & Analytics",
+    icon: Icon.Database,
+    items: [
+      "Python",
+      "NumPy",
+      "Pandas",
+      "Matplotlib",
+      "Seaborn",
+      "Exploratory Data Analysis",
+      "Data Preprocessing",
+      "Data Cleaning",
+      "Statistical Analysis",
+      "Descriptive Statistics",
+      "Outlier Detection",
+      "Data Visualization",
+      "SQL",
+    ],
+  },
+  {
+    category: "Full-Stack Development",
+    icon: Icon.Code,
+    items: [
+      "Full-Stack Development",
+      "React",
+      "JavaScript",
+      "TypeScript",
+      "HTML5",
+      "CSS3",
+      "Tailwind CSS",
+      "Responsive Web Design",
+      "REST APIs",
+      "Frontend Development",
+      "Backend Development",
+      "API Integration",
+    ],
+  },
+  {
+    category: "Backend, APIs & Databases",
+    icon: Icon.Database,
+    items: [
+      "Python",
+      "FastAPI",
+      "Django",
+      "Django REST Framework",
+      "REST API Development",
+      "API Design",
+      "MySQL",
+      "SQL",
+      "Database Design",
+      "CRUD Operations",
+      "Authentication",
+      "JSON",
+    ],
+  },
+  {
+    category: "Developer Tools & Deployment",
     icon: Icon.Tool,
-    items: ["Django", "Git", "GitHub", "VS Code", "PyCharm", "Google Colab", "Figma"],
+    items: [
+      "Git",
+      "GitHub",
+      "GitHub API",
+      "VS Code",
+      "PyCharm",
+      "Jupyter Notebook",
+      "Postman",
+      "Virtual Environments",
+      "pip",
+      "Vercel",
+      "Netlify",
+      "Linux",
+    ],
+  },
+];
+
+const EXPERIENCE = [
+  {
+    period: "Nov 2025 — Dec 2025",
+    role: "Python Intern",
+    company: "Regional Technologies, Calicut",
+    text: "Developed Python applications through practical, task-based assignments while strengthening debugging, logical reasoning and software development skills under mentorship.",
   },
   {
-    category: "Professional Skills",
-    icon: Icon.Users,
-    items: ["Problem Solving", "Leadership", "Teamwork", "Communication", "Critical Thinking", "Time Management"],
+    period: "2024 — 2026",
+    role: "College Media Head",
+    company: "St. Benedict's College",
+    text: "Led a student media team covering campus events, coordinating people, communication and creative delivery across college activities.",
   },
 ];
 
@@ -175,7 +486,7 @@ export default function App() {
               </li>
             ))}
           </ul>
-          <a href="mailto:tojotom05@gmail.com" className="btn btn-primary hidden !px-5 !py-2 text-sm md:inline-flex">
+          {/* <a href="mailto:tojotom05@gmail.com" className="btn btn-primary hidden !px-5 !py-2 text-sm md:inline-flex">
             Hire me
           </a>
           <button
@@ -185,7 +496,7 @@ export default function App() {
             aria-expanded={menuOpen}
           >
             {menuOpen ? <Icon.Close className="h-5 w-5" /> : <Icon.Menu className="h-5 w-5" />}
-          </button>
+          </button> */}
         </nav>
         {menuOpen && (
           <div className="glass absolute left-4 right-4 top-[4.6rem] rounded-3xl p-3 md:hidden">
@@ -265,16 +576,16 @@ export default function App() {
             {/* right: role */}
             <div className="space-y-6 pb-16 text-center md:pb-0 md:text-left">
               <Reveal delay={200}>
-                <p className="font-display text-lg font-medium text-gray-300 md:text-xl">AI &amp; ML Developer</p>
+                <p className="font-display text-lg font-medium text-gray-300 md:text-xl">AI + Full-StackAI / Machine Learning Developer</p>
                 <p className="font-display mt-1 text-4xl font-bold uppercase leading-[1.02] tracking-tight sm:text-5xl lg:text-5xl">
-                  <span className="whitespace-nowrap bg-gradient-to-r from-cyan-300 to-sky-400 bg-clip-text text-transparent">Full-Stack</span>
+                  <span className="whitespace-nowrap bg-gradient-to-r from-cyan-300 to-sky-400 bg-clip-text text-transparent">AI / Machine Learning </span>
                   <br />
-                  <span className="text-white">Python</span>
+                  <span className="text-white">Developer</span>
                 </p>
               </Reveal>
               <Reveal delay={280}>
                 <p className="mx-auto max-w-sm text-sm leading-relaxed text-gray-400 md:mx-0 md:text-base">
-                  Building intelligent systems and the Django web applications around them — from raw data to a working interface.
+                  Building practical AI/ML systems and the applications around them — from data and models to grounded AI experiences and usable interfaces.
                 </p>
               </Reveal>
               <Reveal delay={340} className="flex flex-wrap justify-center gap-3 md:justify-start">
@@ -301,70 +612,165 @@ export default function App() {
           </div>
         </div>
 
-        {/* ================= Services ================= */}
-        <section id="services" className="px-6 py-28 md:px-10">
-          <div className="mx-auto max-w-6xl">
-            <SectionHeader
-              num="01"
-              eyebrow="What I do"
-              title="From data to deployed product"
-              intro="Machine learning and full-stack Python development, end to end."
-            />
-            <div className="mt-14 grid gap-6 md:grid-cols-3">
-              {SERVICES.map((s, i) => {
-                const S = s.icon;
-                return (
-                  <Reveal key={s.title} delay={i * 90}>
-                    <Tilt max={7} className="glass h-full rounded-3xl p-8">
-                      <span
-                        className="grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br from-violet-500 to-cyan-400 text-white shadow-lg shadow-violet-900/40"
-                        style={{ transform: "translateZ(40px)" }}
-                      >
-                        <S className="h-6 w-6" />
-                      </span>
-                      <h3 className="font-display mt-6 text-xl font-semibold text-white">{s.title}</h3>
-                      <p className="mt-3 text-sm leading-relaxed text-gray-400">{s.text}</p>
-                      <div className="mt-6 flex flex-wrap gap-2" style={{ transform: "translateZ(20px)" }}>
-                        {s.tags.map((t) => (
-                          <span key={t} className="rounded-md border border-white/10 bg-white/[0.04] px-2.5 py-1 font-mono text-[11px] text-gray-300">
-                            {t}
-                          </span>
-                        ))}
-                      </div>
-                    </Tilt>
-                  </Reveal>
-                );
-              })}
-            </div>
+      <section id="services" className="relative px-6 py-28 md:px-10">
+  <div className="mx-auto max-w-7xl">
 
-            {/* pipeline */}
-            <Reveal delay={100} className="mt-10">
-              <div className="glass grid gap-2 rounded-3xl p-3 sm:grid-cols-2 lg:grid-cols-4">
-                {PIPELINE.map((p, i) => {
-                  const P = p.icon;
-                  return (
-                    <div key={p.label} className="relative flex items-center gap-4 rounded-2xl px-5 py-4">
-                      <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-white/[0.05] text-cyan-300 ring-1 ring-white/10">
-                        <P className="h-5 w-5" />
-                      </span>
-                      <div>
-                        <p className="font-mono text-[10px] uppercase tracking-widest text-gray-500">Step 0{i + 1}</p>
-                        <p className="font-display font-semibold text-white">{p.label}</p>
-                        <p className="text-xs text-gray-400">{p.text}</p>
-                      </div>
-                      {i < PIPELINE.length - 1 && <Icon.ArrowUpRight className="absolute -right-2 top-1/2 hidden h-4 w-4 -translate-y-1/2 rotate-45 text-gray-600 lg:block" />}
-                    </div>
-                  );
-                })}
+    <SectionHeader
+      num="01"
+      eyebrow="What I build"
+      title="AI solutions engineered for real use"
+      intro="From machine learning models and generative AI to full-stack applications, I build technology that moves from idea to working product."
+    />
+
+    {/* Service Cards */}
+    <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {SERVICES.map((service, i) => {
+        const S = service.icon;
+
+        return (
+          <Reveal key={service.title} delay={i * 80}>
+            <Tilt max={6} className="h-full">
+
+              <div className="group glass relative flex h-full min-h-[360px] flex-col overflow-hidden rounded-3xl p-7 md:p-8">
+
+                {/* Ambient Glow */}
+                <div className="pointer-events-none absolute -right-20 -top-20 h-40 w-40 rounded-full bg-cyan-400/10 blur-3xl transition-all duration-500 group-hover:bg-cyan-400/20" />
+
+                {/* Service Number */}
+                <div className="absolute right-7 top-7 font-mono text-[10px] tracking-[0.25em] text-gray-600">
+                  {service.number}
+                </div>
+
+                {/* Icon */}
+                <div
+                  className="relative grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br from-violet-500/20 to-cyan-400/15 text-cyan-300 ring-1 ring-white/10 transition-all duration-500 group-hover:scale-105 group-hover:ring-cyan-300/30"
+                  style={{ transform: "translateZ(35px)" }}
+                >
+                  <S className="h-6 w-6" />
+                </div>
+
+                {/* Title */}
+                <div className="relative mt-7">
+                  <h3 className="font-display text-xl font-bold text-white md:text-2xl">
+                    {service.title}
+                  </h3>
+
+                  <p className="mt-2 text-xs font-medium uppercase tracking-[0.12em] text-violet-300/80">
+                    {service.subtitle}
+                  </p>
+                </div>
+
+                {/* Description */}
+                <p className="relative mt-5 flex-1 text-sm leading-7 text-gray-400">
+                  {service.text}
+                </p>
+
+                {/* Technology Tags */}
+                <div
+                  className="relative mt-7 flex flex-wrap gap-2"
+                  style={{ transform: "translateZ(20px)" }}
+                >
+                  {service.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded-lg border border-white/10 bg-white/[0.035] px-2.5 py-1.5 font-mono text-[10px] text-gray-300 transition-all duration-300 group-hover:border-white/15"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+
+                {/* Bottom Accent */}
+                <div className="absolute bottom-0 left-0 h-px w-0 bg-gradient-to-r from-violet-400 to-cyan-300 transition-all duration-500 group-hover:w-full" />
+
               </div>
-            </Reveal>
+
+            </Tilt>
+          </Reveal>
+        );
+      })}
+    </div>
+
+    {/* Workflow */}
+    <Reveal delay={120} className="mt-10">
+      <div className="glass overflow-hidden rounded-3xl p-6 md:p-8">
+
+        <div className="mb-7 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+
+          <div>
+            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-cyan-300/70">
+              My workflow
+            </p>
+
+            <h3 className="font-display mt-2 text-xl font-bold text-white md:text-2xl">
+              From idea to intelligent product
+            </h3>
           </div>
-        </section>
+
+          <p className="max-w-md text-sm leading-6 text-gray-500">
+            A practical development workflow connecting data, AI models,
+            backend systems and user-facing applications.
+          </p>
+
+        </div>
+
+        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+
+          {PIPELINE.map((p, i) => {
+            const P = p.icon;
+
+            return (
+              <div
+                key={p.label}
+                className="group relative rounded-2xl border border-white/5 bg-white/[0.025] p-5 transition-all duration-300 hover:border-cyan-400/20 hover:bg-white/[0.04]"
+              >
+
+                <div className="flex items-start justify-between">
+
+                  <span className="grid h-10 w-10 place-items-center rounded-xl bg-cyan-400/10 text-cyan-300 ring-1 ring-cyan-400/10">
+                    <P className="h-5 w-5" />
+                  </span>
+
+                  <span className="font-mono text-[10px] text-gray-600">
+                    0{i + 1}
+                  </span>
+
+                </div>
+
+                <p className="font-display mt-5 font-semibold text-white">
+                  {p.label}
+                </p>
+
+                <p className="mt-1 text-xs leading-5 text-gray-500">
+                  {p.text}
+                </p>
+
+                {i < PIPELINE.length - 1 && (
+                  <Icon.ArrowUpRight
+                    className="absolute -right-3 top-1/2 hidden h-4 w-4 -translate-y-1/2 rotate-45 text-gray-700 lg:block"
+                  />
+                )}
+
+              </div>
+            );
+          })}
+
+        </div>
+
+      </div>
+    </Reveal>
+
+  </div>
+</section>
 
         {/* ================= Skills ================= */}
         <section id="skills" className="px-6 py-28 md:px-10">
           <div className="mx-auto max-w-6xl">
-            <SectionHeader num="02" eyebrow="Technologies I work with" title="Skills" intro="The languages, libraries and tools I reach for every day." />
+            <SectionHeader
+                    num="02"
+                    eyebrow="AI • ML • Full-Stack"
+                     title="Technical Skills"
+                       intro="A practical toolkit spanning machine learning, generative AI, full-stack development, data science and modern application engineering."/>
             <div className="mt-14 grid gap-6 md:grid-cols-2">
               {SKILLS.map((group, i) => {
                 const G = group.icon;
@@ -395,60 +801,287 @@ export default function App() {
           </div>
         </section>
 
-        {/* ================= Projects ================= */}
-        <section id="projects" className="px-6 py-28 md:px-10">
-          <div className="mx-auto max-w-7xl">
-            <SectionHeader num="03" eyebrow="Open-source projects from my GitHub" title="GitHub Projects" />
-            <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {repoState === "loading" &&
-                Array.from({ length: 6 }).map((_, i) => <div key={i} className="skeleton h-52 rounded-3xl border border-white/5" />)}
+{/* ================= Projects ================= */}
+<section id="projects" className="relative px-6 py-28 md:px-10">
+  <div className="mx-auto max-w-7xl">
 
-              {repoState === "error" && (
-                <div className="glass col-span-full rounded-3xl p-10 text-center">
-                  <p className="text-gray-300">Couldn't load projects right now.</p>
-                  <a href="https://github.com/tojotk" target="_blank" rel="noopener noreferrer" className="btn btn-ghost mt-5">
-                    Browse them on GitHub <Icon.ArrowUpRight className="h-4 w-4" />
-                  </a>
+    <SectionHeader
+      num="03"
+      eyebrow="Projects"
+      title="AI projects built with purpose"
+      intro="A curated selection of machine learning, computer vision, NLP and full-stack AI projects focused on solving practical problems through intelligent software."
+    />
+
+    <div className="mt-14 grid gap-6 lg:grid-cols-12">
+
+      {FEATURED_PROJECTS.map((project, i) => (
+        <Reveal
+          key={project.title}
+          delay={(i % 3) * 80}
+          className={
+            project.featured
+              ? "lg:col-span-7"
+              : i === 1
+                ? "lg:col-span-5"
+                : "lg:col-span-4"
+          }
+        >
+          <Tilt max={6} className="h-full">
+
+            <a
+              href={project.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`project-card glass group relative flex h-full min-h-[430px] flex-col overflow-hidden rounded-3xl p-7 md:p-8 ${
+                project.featured ? "project-featured" : ""
+              }`}
+            >
+
+              {/* Ambient Glow */}
+              <div className="pointer-events-none absolute -right-24 -top-24 h-56 w-56 rounded-full bg-cyan-400/10 blur-3xl transition-all duration-700 group-hover:bg-cyan-400/20" />
+
+              {/* Project Number */}
+              <div className="absolute right-7 top-7 font-mono text-[10px] tracking-[0.25em] text-gray-600">
+                {project.number}
+              </div>
+
+              {/* Header */}
+              <div className="relative">
+
+                <div className="flex items-center gap-2">
+                  <span className="h-1.5 w-1.5 rounded-full bg-gradient-to-br from-violet-400 to-cyan-300" />
+
+                  <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-cyan-300/80">
+                    {project.featured
+                      ? "Featured project"
+                      : "Selected project"}
+                  </p>
                 </div>
-              )}
 
-              {repoState === "ready" && repos.length === 0 && (
-                <div className="glass col-span-full rounded-3xl p-10 text-center text-gray-400">No public repositories yet.</div>
-              )}
+                <h3 className="font-display mt-4 max-w-xl text-2xl font-bold tracking-tight text-white transition-colors duration-300 group-hover:text-cyan-50 md:text-3xl">
+                  {project.title}
+                </h3>
 
-              {repos.map((repo, i) => (
-                <Reveal key={repo.id} delay={(i % 3) * 80}>
-                  <Tilt max={7} className="h-full">
-                    <a
-                      href={repo.html_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="glass group flex h-full min-h-52 flex-col rounded-3xl p-7 transition-colors hover:border-violet-400/50"
-                    >
+                <p className="mt-2 text-sm font-medium text-violet-300">
+                  {project.subtitle}
+                </p>
+
+                {project.category && (
+                  <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.12em] text-gray-600">
+                    {project.category}
+                  </p>
+                )}
+
+              </div>
+
+              {/* Project Description */}
+              <div className="relative mt-7 flex-1">
+
+                <p className="text-sm leading-7 text-gray-400">
+                  {project.text}
+                </p>
+
+                {/* Engineering Focus */}
+                {project.impact && (
+                  <div className="mt-6 rounded-2xl border border-white/[0.06] bg-white/[0.025] p-4 transition-all duration-300 group-hover:border-cyan-400/10 group-hover:bg-white/[0.04]">
+
+                    <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-cyan-300/60">
+                      Engineering focus
+                    </p>
+
+                    <p className="mt-2 text-xs leading-6 text-gray-500">
+                      {project.impact}
+                    </p>
+
+                  </div>
+                )}
+
+              </div>
+
+              {/* Technology Stack */}
+              <div className="relative mt-7 flex flex-wrap gap-2">
+
+                {project.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="rounded-lg border border-white/10 bg-white/[0.035] px-2.5 py-1.5 font-mono text-[10px] text-gray-300 transition-all duration-300 group-hover:border-cyan-300/15 group-hover:text-gray-200"
+                  >
+                    {tag}
+                  </span>
+                ))}
+
+              </div>
+
+              {/* Footer */}
+              <div className="relative mt-7 flex items-center justify-between border-t border-white/[0.06] pt-5">
+
+                <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-gray-600 transition-colors group-hover:text-gray-400">
+                  View source
+                </span>
+
+                <span className="grid h-9 w-9 place-items-center rounded-full border border-white/10 bg-white/[0.03] text-gray-500 transition-all duration-300 group-hover:border-cyan-300/30 group-hover:bg-cyan-300/10 group-hover:text-cyan-300">
+
+                  <Icon.ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+
+                </span>
+
+              </div>
+
+              {/* Bottom Accent */}
+              <div className="absolute bottom-0 left-0 h-px w-0 bg-gradient-to-r from-violet-400 via-cyan-300 to-transparent transition-all duration-700 group-hover:w-full" />
+
+            </a>
+
+          </Tilt>
+        </Reveal>
+      ))}
+
+    </div>
+
+  </div>
+</section>
+
+
+{/* ================= GitHub CTA ================= */}
+<section className="relative px-6 pb-28 md:px-10">
+  <div className="mx-auto max-w-7xl">
+
+    <Reveal delay={180}>
+
+      <div className="glass relative overflow-hidden rounded-3xl p-7 md:p-9">
+
+        {/* Ambient Glow */}
+        <div className="pointer-events-none absolute -right-20 -top-20 h-48 w-48 rounded-full bg-cyan-400/10 blur-3xl" />
+
+        <div className="relative flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+
+          {/* Content */}
+          <div>
+
+            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-cyan-300/70">
+              More on GitHub
+            </p>
+
+            <h3 className="font-display mt-2 text-2xl font-bold text-white">
+              Explore the rest of my development work
+            </h3>
+
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-gray-500">
+              Browse source code, experiments and projects across AI,
+              machine learning, Python and application development.
+            </p>
+
+          </div>
+
+          {/* CTA */}
+          <a
+            href="https://github.com/tojotk"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn btn-primary shrink-0"
+          >
+            Visit GitHub
+            <Icon.ArrowUpRight className="h-4 w-4" />
+          </a>
+
+        </div>
+
+      </div>
+
+    </Reveal>
+
+  </div>
+</section>
+        {/* ================= Experience ================= */}
+        <section id="experience" className="px-6 py-28 md:px-10">
+          <div className="mx-auto max-w-6xl">
+            <SectionHeader
+              num="04"
+              eyebrow="Experience & education"
+              title="Building experience with intention"
+              intro="A practical foundation in Python development, AI/ML and team leadership."
+            />
+            <div className="mt-14 grid gap-6 lg:grid-cols-5">
+              <div className="space-y-5 lg:col-span-3">
+                {EXPERIENCE.map((item, i) => (
+                  <Reveal key={item.role} delay={i * 90}>
+                    <Tilt max={4} className="glass rounded-3xl p-7 md:p-8">
+                      <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+                        <div>
+                          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-cyan-300/80">{item.period}</p>
+                          <h3 className="font-display mt-2 text-xl font-bold text-white">{item.role}</h3>
+                          <p className="mt-1 text-sm text-violet-300">{item.company}</p>
+                        </div>
+                        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-white/[0.04] text-cyan-300 ring-1 ring-white/10">
+                          <Icon.Briefcase className="h-5 w-5" />
+                        </span>
+                      </div>
+                      <p className="mt-6 text-sm leading-7 text-gray-400">{item.text}</p>
+                    </Tilt>
+                  </Reveal>
+                ))}
+              </div>
+              <Reveal delay={100} className="lg:col-span-2">
+                <Tilt max={4} className="glass h-full rounded-3xl p-7 md:p-8">
+                  <div className="flex items-center gap-3">
+                    <span className="grid h-11 w-11 place-items-center rounded-xl bg-violet-500/15 text-violet-300 ring-1 ring-white/10">
+                      <Icon.Cap className="h-5 w-5" />
+                    </span>
+                    <div>
+                      <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-gray-500">Education & Certification</p>
+                      <h3 className="font-display text-lg font-bold text-white">Academic foundation</h3>
+                    </div>
+                  </div>
+
+                  <div className="mt-7 space-y-6">
+                    {/* Education */}
+                    <div>
+                      <p className="font-display font-semibold text-white">Bachelor of Computer Applications (BCA)</p>
+                      <p className="mt-1 text-sm text-violet-300">St. Benedict's College · 2023–2026</p>
+                      <p className="mt-2 text-sm text-gray-500">CGPA: 7.03 / 10</p>
+                    </div>
+
+                    {/* Certification */}
+                    <div className="border-t border-white/10 pt-6">
                       <div className="flex items-start justify-between gap-4">
-                        <h3 className="font-display break-words text-xl font-semibold text-white">{repo.name}</h3>
-                        <Icon.ArrowUpRight className="h-5 w-5 shrink-0 text-gray-500 transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-violet-300" />
+                        <div>
+                          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-cyan-300/80">Certification</p>
+                          <p className="font-display mt-2 font-semibold leading-relaxed text-white">
+                            Certified Specialist in Artificial Intelligence & Machine Learning
+                          </p>
+                          <p className="mt-1 text-sm text-violet-300">ICT Academy of Kerala</p>
+                        </div>
+
+                        <span className="hidden h-10 w-10 shrink-0 place-items-center rounded-xl bg-cyan-400/10 text-cyan-300 ring-1 ring-cyan-400/20 sm:grid">
+                          <Icon.Cap className="h-5 w-5" />
+                        </span>
                       </div>
-                      <p className="mt-3 flex-1 text-sm leading-relaxed text-gray-400">{repo.description || "No description available."}</p>
-                      <div className="mt-6 flex items-center gap-4 text-xs text-gray-400">
-                        {repo.language && (
-                          <span className="inline-flex items-center gap-1.5">
-                            <span className="h-2.5 w-2.5 rounded-full" style={{ background: LANG_COLORS[repo.language] ?? "#8b5cf6" }} />
-                            {repo.language}
-                          </span>
-                        )}
-                        {!!repo.stargazers_count && (
-                          <span className="inline-flex items-center gap-1">
-                            <Icon.Star className="h-3.5 w-3.5" />
-                            {repo.stargazers_count}
-                          </span>
-                        )}
-                        <span className="ml-auto font-medium text-violet-300 opacity-0 transition-opacity group-hover:opacity-100">View →</span>
+
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs text-gray-300">
+                          375 Hours
+                        </span>
+                        <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs text-gray-300">
+                          May–September 2026
+                        </span>
+                        <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs text-gray-300">
+                          Issued October 2026
+                        </span>
                       </div>
-                    </a>
-                  </Tilt>
-                </Reveal>
-              ))}
+
+                      <a
+                        href="/certificates/ict-academy-certificate.jpg"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group mt-5 inline-flex items-center gap-2 rounded-xl border border-cyan-400/20 bg-cyan-400/10 px-4 py-2.5 text-sm font-semibold text-cyan-300 transition-all duration-300 hover:border-cyan-300/40 hover:bg-cyan-400/20 hover:text-white"
+                      >
+                        View Certificate
+                        <Icon.ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                      </a>
+                    </div>
+                  </div>
+                </Tilt>
+              </Reveal>
             </div>
           </div>
         </section>
@@ -456,7 +1089,7 @@ export default function App() {
         {/* ================= Profile ================= */}
         <section id="profile" className="px-6 py-28 md:px-10">
           <div className="mx-auto max-w-6xl">
-            <SectionHeader num="04" eyebrow="Get to know me" title="Profile" />
+            <SectionHeader num="06" eyebrow="Get to know me" title="Profile" />
             <div className="mt-14 grid gap-6 md:grid-cols-5">
               <Reveal className="md:col-span-3">
                 <Tilt max={4} className="glass h-full rounded-3xl p-8">
@@ -466,16 +1099,19 @@ export default function App() {
                     </div>
                     <div>
                       <h3 className="font-display text-xl font-semibold text-white">Tojo Tom Kattakayam</h3>
-                      <p className="text-sm text-violet-300">AI / ML Developer · Full-Stack Python Developer</p>
+                      <p className="text-sm text-violet-300">AI / Machine Learning Developer</p>
                     </div>
                   </div>
-                  <dl className="mt-6 grid gap-x-8 gap-y-5 sm:grid-cols-2">
+                  <p className="mt-6 text-sm leading-7 text-gray-400">
+                    BCA graduate and certified AI/ML specialist focused on practical machine learning, computer vision, NLP and
+                    generative AI applications. I enjoy taking ideas from experimentation to usable software.
+                  </p>
+                  <dl className="mt-7 grid gap-x-8 gap-y-5 sm:grid-cols-2">
                     <Detail icon={<Icon.Pin />} label="Location" value="Kozhikode, Kerala, India" />
-                    <Detail icon={<Icon.User />} label="Age" value="21" />
                     <Detail icon={<Icon.Mail />} label="Email" value="tojotom05@gmail.com" />
                     <Detail icon={<Icon.Phone />} label="Phone" value="+91 8921981997" />
-                    <Detail icon={<Icon.Cap />} label="Education" value="BCA — AI/ML" />
-                    <Detail icon={<Icon.Briefcase />} label="Status" value="Available for work" valueClass="text-emerald-400" />
+                    <Detail icon={<Icon.Cap />} label="Education" value="BCA · 2023–2026" />
+                    <Detail icon={<Icon.Briefcase />} label="Status" value="Open to AI/ML roles" valueClass="text-emerald-400" />
                     <Detail icon={<Icon.Globe />} label="Languages" value="English, Malayalam" />
                     <Detail icon={<Icon.Target />} label="Interests" value="AI/ML, Full-Stack Development, Music" />
                   </dl>
@@ -519,7 +1155,7 @@ export default function App() {
         <section id="contact" className="px-6 pb-16 pt-28 md:px-10">
           <div className="mx-auto max-w-5xl">
             <div className="text-center">
-              <SectionCentered eyebrow="Let's connect" title="Get In Touch" />
+              <SectionCentered eyebrow="07 · Let's connect" title="Get In Touch" />
               <Reveal delay={100}>
                 <p className="mx-auto mt-6 max-w-2xl text-gray-400 md:text-lg">
                   Interested in collaborating on an AI/ML project or building a Python / Django web application? Feel free to reach
